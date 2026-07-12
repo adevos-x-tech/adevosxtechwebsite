@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Adevos-X Tech | Green Cyber Hub - Web Development, WhatsApp Bots, AI Solutions, and Cyber Security.">
+  <meta name="keywords" content="Adevos-X, Web Development, WhatsApp Bots, AI, Cyber Security">
+  <meta name="author" content="Adevos-X Team">
+  <title>Adevos-X Tech | Green Cyber Hub</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg-body: #0a0f0a;
+      --bg-surface: #0e1410;
+      --bg-card: #121a14;
+      --border: #1c2a1f;
+      --text-primary: #e2f0e0;
+      --text-secondary: #9bbf8f;
+      --accent: #00e676;
+      --accent-dark: #00b248;
+      --shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
+      --glass-bg: rgba(18, 26, 20, 0.85);
+      --cta-bg: rgba(0, 230, 118, 0.1);
+    }
+    body.light {
+      --bg-body: #eaf7ea;
+      --bg-surface: #ffffff;
+      --bg-card: #f4fcf0;
+      --border: #c0dfb5;
+      --text-primary: #0f2b0f;
+      --text-secondary: #2a5c2a;
+      --accent: #2e7d32;
+      --glass-bg: rgba(240, 248, 240, 0.9);
+      --cta-bg: rgba(46, 125, 50, 0.1);
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text-primary);
+      transition: background 0.3s, color 0.2s;
+      overflow-x: hidden;
+      background: radial-gradient(circle at 20% 30%, rgba(0,20,10,0.85), rgba(0,0,0,0.95)), repeating-linear-gradient(0deg, rgba(0,230,118,0.05) 0px, rgba(0,230,118,0.05) 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, rgba(0,230,118,0.05) 0px, rgba(0,230,118,0.05) 1px, transparent 1px, transparent 40px);
+      background-attachment: fixed;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(ellipse at 70% 40%, rgba(0,255,100,0.05), transparent 60%);
+      pointer-events: none; z-index: -1;
+    }
+    body.light {
+      background: radial-gradient(circle at 20% 30%, rgba(200,240,200,0.6), rgba(255,255,255,0.9)), repeating-linear-gradient(0deg, rgba(46,125,50,0.06) 0px, rgba(46,125,50,0.06) 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, rgba(46,125,50,0.06) 0px, rgba(46,125,50,0.06) 1px, transparent 1px, transparent 40px);
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 0 1.2rem; position: relative; z-index: 2; }
+    h2, h3, h4, .nav-center, .login-card h2, .updates-header-row h3 { font-family: 'Orbitron', sans-serif !important; letter-spacing: 1px; }
+
+    /* ========== NAVBAR ========== */
+    .navbar { background: var(--bg-surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(8px); }
+    .nav-container { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; position: relative; }
+    .nav-left { display: flex; align-items: center; position: relative; z-index: 1001; }
+    .hamburger { background: none; border: none; font-size: 1.3rem; color: var(--accent); cursor: pointer; padding-right: 10px; outline: none; }
+    .nav-center { font-weight: 700; background: linear-gradient(135deg, var(--accent), #b9f6ca); background-clip: text; -webkit-background-clip: text; color: transparent; font-size: 1.2rem; text-align: center; flex: 1; }
+    .profile-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; cursor: pointer; border: 1px solid var(--border); color: #0a0f0a; background-size: cover; background-position: center; position: relative; z-index: 1001; }
+
+    /* ========== TOAST CONTAINER ========== */
+    #toastContainer { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 999999 !important; pointer-events: none; display: flex; flex-direction: row; align-items: center; width: 100%; justify-content: center; }
+    .toast-box { background: var(--bg-surface); border: 1px solid var(--accent); color: var(--text-primary); padding: 0.6rem 1rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; box-shadow: 0px 4px 20px rgba(0,0,0,0.8); display: flex; align-items: flex-start; gap: 0.6rem; pointer-events: auto; cursor: pointer; white-space: normal !important; width: 90%; max-width: 320px; overflow: visible; text-overflow: clip; animation: toastFadeIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .toast-box span { display: inline-block; white-space: normal !important; overflow: visible; text-overflow: clip; line-height: 1.4; }
+    .toast-box i { color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+    @keyframes toastFadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ========== GREEN MENU BADGE ========== */
+    .notif-badge { background: var(--accent); color: #0a0f0a; font-size: 0.65rem; font-weight: 800; padding: 0.15rem 0.4rem; border-radius: 1rem; margin-left: auto; font-family: 'Orbitron', sans-serif; box-shadow: 0 0 10px var(--accent); }
+    body.light .notif-badge { color: #ffffff; }
+
+    /* ========== UPDATES CARD COMPONENTS ========== */
+    .updates-header-row { display: flex; align-items: center; justify-content: center; margin-bottom: 0.8rem; border-bottom: 1px dashed var(--border); padding-bottom: 0.5rem; }
+    .updates-bottom-row { display: flex; justify-content: center; margin-top: 0.8rem; padding-top: 0.5rem; border-top: 1px dashed var(--border); }
+    .mark-read-btn { background: var(--accent); border: none; color: #0a0f0a; padding: 0.45rem 1.4rem; border-radius: 1.5rem; font-size: 0.72rem; font-weight: bold; cursor: pointer; transition: 0.2s; width: auto; text-transform: none; box-shadow: 0 2px 8px rgba(0, 230, 118, 0.2); }
+    .mark-read-btn:hover { background: #ffffff; color: #0a0f0a; }
+    body.light .mark-read-btn { color: #ffffff; }
+    body.light .mark-read-btn:hover { background: var(--bg-body); color: var(--accent); }
+    .logs-scroll-area { max-height: 180px; overflow-y: auto; padding-right: 0.3rem; text-align: left; display: flex; flex-direction: column; gap: 0.5rem; }
+    .logs-scroll-area::-webkit-scrollbar { width: 3px; }
+    .logs-scroll-area::-webkit-scrollbar-track { background: transparent; }
+    .logs-scroll-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+    .log-item-row { background: rgba(0,0,0,0.2); padding: 0.5rem 0.4rem; border-radius: 0.4rem; font-size: 0.72rem; line-height: 1.3; }
+    .log-item-row .log-time { font-size: 0.6rem; color: var(--accent); display: block; margin-bottom: 0.1rem; font-family: 'JetBrains Mono', monospace; }
+
+    /* ========== LOGIN OVERLAY (SSO) ========== */
+    .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.92); backdrop-filter: blur(12px); z-index: 10000; display: flex; align-items: center; justify-content: center; }
+    .login-card { background: var(--bg-surface); border-radius: 1.5rem; border: 1px solid var(--accent); padding: 1.8rem 1.5rem; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 20px 35px -10px black; }
+    .login-card h2 { font-size: 1.5rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--accent), #b9f6ca); background-clip: text; -webkit-background-clip: text; color: transparent; }
+    .login-card p { color: var(--text-secondary); margin-bottom: 1.2rem; font-size: 0.8rem; }
+    .sso-btn { display: flex; align-items: center; gap: 0.8rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 3rem; padding: 0.6rem 1.2rem; margin: 0.6rem 0; width: 100%; font-weight: 600; cursor: pointer; transition: 0.2s; color: var(--text-primary); justify-content: center; font-size: 0.8rem; }
+    .sso-btn i { font-size: 1.1rem; }
+    .sso-btn:hover { background: var(--accent); color: #0a0f0a; border-color: var(--accent); }
+    .sso-btn.google i { color: #ea4335; }
+    .sso-btn.github i { color: #f5f5f5; }
+    .sso-btn.generic i { color: var(--accent); }
+
+    /* ========== THEMED PROFILE POPUP ========== */
+    .profile-popup { position: absolute; top: 55px; right: 0; width: 165px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 1rem; z-index: 1500; display: none; flex-direction: column; backdrop-filter: blur(8px); box-shadow: var(--shadow); font-size: 0.75rem; overflow: hidden; padding: 0.5rem; }
+    .profile-popup.show { display: flex; }
+    .popup-user-info { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.4rem; padding: 0.5rem 0.2rem; background: rgba(0,0,0,0.05); border-bottom: 1px solid var(--border); }
+    .popup-avatar-small { width: 42px; height: 42px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem; background-size: cover; background-position: center; order: 3; margin: 0.3rem 0; }
+    .popup-user-text { display: flex; flex-direction: column; align-items: center; width: 100%; overflow: hidden; }
+    .popup-user-name { font-weight: 800; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-primary); font-family: 'Orbitron', sans-serif; order: 1; }
+    .popup-user-email { font-size: 0.65rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; order: 2; }
+    .popup-settings-btn { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.4rem; cursor: pointer; transition: 0.2s; border-bottom: 1px solid var(--border); color: var(--text-primary); justify-content: center; }
+    .popup-settings-btn i { width: 1.2rem; color: var(--accent); }
+    .popup-settings-btn:hover { background: rgba(0,230,118,0.08); }
+    .settings-submenu { display: none; flex-direction: column; padding: 0.4rem 0.2rem; background: rgba(0,0,0,0.03); border-bottom: 1px solid var(--border); gap: 0.5rem; }
+    .settings-submenu.show { display: flex; }
+    .setting-item { display: flex; flex-direction: column; gap: 0.3rem; align-items: center; text-align: center; }
+    .setting-item label { font-size: 0.58rem; text-transform: uppercase; color: var(--accent); font-weight: 700; width: 100%; }
+    .photo-upload-row { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+    .popup-avatar-preview-small { width: 34px; height: 34px; border-radius: 50%; background: var(--bg-surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.75rem; background-size: cover; background-position: center; }
+    .upload-photo-btn-small { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 1rem; padding: 0.2rem 0.5rem; font-size: 0.58rem; cursor: pointer; color: var(--text-primary); text-align: center; }
+    .setting-input { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.3rem 0.4rem; font-size: 0.68rem; color: var(--text-primary); width: 100%; outline: none; text-align: center; }
+    .setting-button { background: var(--accent); border: none; border-radius: 0.4rem; padding: 0.2rem 0.6rem; font-size: 0.6rem; font-weight: bold; cursor: pointer; margin-top: 0.1rem; color: #0a0f0a; width: auto; min-width: 50px; }
+    .options-list-compact { display: flex; justify-content: center; gap: 0.3rem; margin-top: 0.1rem; width: 100%; }
+    .option-item-compact { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.2rem 0.4rem; font-size: 0.6rem; cursor: pointer; color: var(--text-primary); }
+    .option-item-compact:hover { background: var(--accent); color: #0a0f0a; }
+    .popup-logout { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.4rem; cursor: pointer; color: #ff5555; font-weight: 600; justify-content: center; }
+    .popup-provider { padding: 0.3rem 0.4rem; font-size: 0.58rem; color: var(--text-secondary); border-top: 1px dashed var(--border); text-align: center; }
+
+    /* ========== SIDEBAR MENU & SEARCH SUGGESTIONS ========== */
+    .sidebar { position: fixed; top: 0; left: -280px; width: 270px; height: 100vh; background: var(--bg-surface); border-right: 1px solid rgba(0, 230, 118, 0.25); z-index: 2000; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding: 1rem 0.8rem; overflow-y: auto; }
+    .sidebar.open { left: 0; }
+    .close-sidebar { position: absolute; top: 0.8rem; right: 0.8rem; font-size: 1.1rem; cursor: pointer; color: var(--accent); z-index: 10; transition: 0.2s; }
+    .close-sidebar:hover { transform: scale(1.1); }
+    .sidebar-search-box { display: flex; flex-direction: column; background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.45rem 0.6rem; margin-bottom: 1.2rem; margin-top: 1.5rem; position: relative; }
+    .search-input-wrapper { display: flex; align-items: center; width: 100%; }
+    .sidebar-search-box i { color: var(--accent); font-size: 0.8rem; margin-right: 0.5rem; }
+    .sidebar-search-box input { background: transparent; border: none; font-size: 0.8rem; color: var(--text-primary); width: 100%; outline: none; font-family: inherit; }
+    .search-suggestions-dropdown { position: absolute; top: 100%; left: 0; width: 100%; background: var(--bg-surface); border: 1px solid var(--accent); border-radius: 0 0 0.5rem 0.5rem; z-index: 2500; max-height: 200px; overflow-y: auto; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
+    .suggestion-item { padding: 0.5rem 0.6rem; font-size: 0.75rem; color: var(--text-primary); cursor: pointer; display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid rgba(28, 42, 31, 0.3); }
+    .suggestion-item:hover { background: rgba(0, 230, 118, 0.15); color: var(--accent); }
+    .suggestion-item i { color: var(--accent); font-size: 0.75rem; }
+    .menu-accordion { display: flex; flex-direction: column; gap: 0.4rem; }
+    .accordion-item { border-bottom: 1px solid rgba(28, 42, 31, 0.15); padding-bottom: 0.2rem; }
+    .accordion-header { display: flex; align-items: center; justify-content: space-between; padding: 0.55rem 0.4rem; cursor: pointer; border-radius: 0.4rem; transition: background 0.2s; }
+    .accordion-header:hover { background: rgba(0, 230, 118, 0.05); }
+    .accordion-title-wrapper { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; font-weight: 500; }
+    .accordion-title-wrapper i { color: var(--accent); font-size: 0.95rem; width: 1.2rem; text-align: center; }
+    .accordion-header .chevron-icon { font-size: 0.7rem; color: var(--text-secondary); transition: transform 0.3s; }
+    .accordion-item.active .chevron-icon { transform: rotate(180deg); color: var(--accent); }
+    .accordion-item.active .accordion-header { background: rgba(0, 230, 118, 0.08); }
+    .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.25s ease-out; padding-left: 1.6rem; }
+    .accordion-item.active .accordion-content { max-height: 400px; margin: 0.2rem 0; }
+    .sub-menu-list { list-style: none; display: flex; flex-direction: column; gap: 0.15rem; }
+    .sub-menu-list li a { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.3rem; font-size: 0.78rem; color: var(--text-secondary); text-decoration: none; border-radius: 0.3rem; }
+    .sub-menu-list li a:hover { color: var(--accent); background: rgba(255, 255, 255, 0.02); }
+    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 1500; display: none; backdrop-filter: blur(3px); }
+    .overlay.active { display: block; }
+
+    /* ========== SLIDER ========== */
+    .slider-section { margin: 1rem 0; overflow: hidden; border-radius: 1rem; box-shadow: var(--shadow); position: relative; z-index: 1; }
+    .slider-track { display: flex; transition: transform 0.4s ease-in-out; }
+    .slide-card { flex: 0 0 100%; height: 280px; background-size: cover; background-position: center; position: relative; }
+    .slide-overlay { background: linear-gradient(0deg, rgba(0, 15, 5, 0.8), transparent); width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding: 1.2rem; }
+    .slide-text h2 { font-size: 1.4rem; font-weight: 800; text-shadow: 0 2px 5px black; }
+    .cta-button { display: inline-block; margin-top: 0.6rem; background: var(--accent); color: #0a0f0a; padding: 0.4rem 1rem; border-radius: 2rem; text-decoration: none; font-weight: bold; font-size: 0.75rem; }
+
+    /* ========== SERVICES ========== */
+    .services-section { margin: 2rem 0; }
+    .section-header { text-align: center; margin-bottom: 1.5rem; }
+    .section-header h2 { font-size: 1.5rem; font-weight: 700; background: linear-gradient(135deg, var(--accent), #b9f6ca); background-clip: text; -webkit-background-clip: text; color: transparent; }
+    .section-header p { font-size: 0.8rem; color: var(--text-secondary); font-weight: 600; margin-top: 0.2rem; }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.2rem; }
+    .service-card { background: var(--bg-card); border-radius: 0.8rem; padding: 1.2rem; border: 1px solid var(--border); transition: 0.3s; text-align: center; opacity: 0; transform: translateY(15px); transition: opacity 0.5s, transform 0.5s; }
+    .service-card.visible { opacity: 1; transform: translateY(0); }
+    .service-icon { font-size: 1.8rem; color: var(--accent); margin-bottom: 0.5rem; }
+    .service-card h3 { font-size: 0.95rem; margin: 0.4rem 0; }
+    .service-card p { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.4; }
+
+    /* ========== GET IN TOUCH ========== */
+    .get-in-touch-section { margin: 2.5rem 0; }
+    .get-in-touch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.2rem; margin-top: 1.5rem; }
+    .touch-card { background: var(--bg-card); border-radius: 0.8rem; overflow: hidden; border: 1px solid var(--border); transition: 0.3s; opacity: 0; transform: translateY(15px); cursor: pointer; position: relative; }
+    .touch-card.visible { opacity: 1; transform: translateY(0); }
+    .touch-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .touch-img { width: 100%; height: 140px; object-fit: cover; border-bottom: 1px solid var(--border); }
+    .touch-content { padding: 0.9rem; text-align: center; }
+    .touch-content h3 { font-size: 0.95rem; margin-bottom: 0.4rem; color: var(--text-primary); }
+    .touch-content p { font-size: 0.72rem; color: var(--text-secondary); line-height: 1.3; }
+    .touch-card.highlight-dev-border { border-color: var(--accent) !important; box-shadow: 0 0 15px rgba(0, 230, 118, 0.4); }
+    .send-now-trigger-btn, .dev-contact-whatsapp-btn, .support-join-trigger-btn, .generic-touch-card-btn { display: inline-block; background: var(--accent); color: #0a0f0a; padding: 0.4rem 1.2rem; border-radius: 1.5rem; font-weight: bold; font-size: 0.72rem; border: none; cursor: pointer; margin-top: 0.6rem; text-transform: uppercase; transition: 0.2s; text-decoration: none; }
+    .send-now-trigger-btn:hover, .dev-contact-whatsapp-btn:hover, .support-join-trigger-btn:hover, .generic-touch-card-btn:hover { background: #fff; color: #0a0f0a; }
+    .support-dropdown-links-container { display: none; margin-top: 0.6rem; padding: 0.5rem; border-top: 1px dashed var(--border); background: rgba(0,0,0,0.15); border-radius: 0.4rem; text-align: left; flex-direction: column; gap: 0.4rem; }
+    .support-dropdown-links-container.active { display: flex; animation: slideDownForm 0.25s ease-out; }
+    .support-sublink-item { display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); text-decoration: none; font-size: 0.72rem; padding: 0.35rem 0.5rem; border-radius: 0.3rem; transition: 0.2s; }
+    .support-sublink-item:hover { color: var(--accent); background: rgba(0, 230, 118, 0.05); }
+    .inline-feedback-form-container { display: none; padding: 0.9rem; border-top: 1px dashed var(--border); background: rgba(0, 230, 118, 0.02); text-align: left; }
+    .inline-feedback-form-container.active { display: block; animation: slideDownForm 0.3s ease-out; }
+    @keyframes slideDownForm { from { opacity:0; transform: translateY(-10px); } to { opacity:1; transform: translateY(0); } }
+    .feedback-input-element { width: 100%; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 0.4rem; padding: 0.4rem 0.6rem; color: var(--text-primary); font-size: 0.72rem; outline: none; margin-bottom: 0.5rem; font-family: inherit; }
+    .feedback-submit-action-btn { background: var(--accent); color: #0a0f0a; font-weight: bold; border: none; width: 100%; padding: 0.5rem; border-radius: 0.4rem; font-size: 0.72rem; cursor: pointer; text-transform: uppercase; }
+
+    /* ========== CLIENT FEEDBACK ========== */
+    .feedback-section { margin: 2.5rem 0; text-align: center; }
+    .feedback-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem; margin-top: 1.5rem; }
+    .feedback-card { background: var(--bg-card); border-radius: 0.8rem; padding: 1.2rem; border: 1px solid var(--border); opacity: 0; transform: translateY(15px); }
+    .feedback-card.visible { opacity: 1; transform: translateY(0); }
+    .feedback-text { font-size: 0.75rem; margin: 0.5rem 0; font-style: italic; color: var(--text-secondary); line-height: 1.4; }
+    .feedback-author { font-weight: 700; color: var(--accent); font-size: 0.75rem; }
+
+    /* STAY CONNECTED */
+    .stay-connected { margin: 2.5rem 0; background: var(--cta-bg); border-radius: 1rem; padding: 1.5rem; text-align: center; border: 1px solid var(--border); }
+    .stay-connected h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+    .stay-connected p { font-size: 0.75rem; color: var(--text-secondary); }
+    .social-links { display: flex; justify-content: center; gap: 0.8rem; flex-wrap: wrap; margin: 1rem 0; }
+    .social-links a { width: 36px; height: 36px; border-radius: 50%; background: var(--bg-surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 1rem; transition: 0.2s; }
+    .social-links a:hover { background: var(--accent); color: #0a0f0a; border-color: var(--accent); }
+    .newsletter { display: flex; justify-content: center; gap: 0.4rem; flex-wrap: wrap; max-width: 400px; margin: 0 auto; }
+    .newsletter input { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 2rem; padding: 0.5rem 1rem; color: var(--text-primary); font-size: 0.75rem; width: 220px; outline: none; }
+    .newsletter button { background: var(--accent); border: none; border-radius: 2rem; padding: 0.5rem 1.2rem; font-weight: bold; font-size: 0.75rem; cursor: pointer; color: #0a0f0a; }
+
+    /* FOOTER */
+    .site-footer { background: var(--bg-surface); border-top: 1px solid var(--border); padding: 2rem 0 1rem; margin-top: 2.5rem; }
+    .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
+    .footer-col h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.6rem; color: var(--accent); }
+    .footer-col ul li { margin-bottom: 0.4rem; list-style: none; }
+    .footer-col ul li a { text-decoration: none; color: var(--text-secondary); font-size: 0.72rem; }
+    .footer-bottom { text-align: center; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.68rem; color: var(--text-secondary); }
+
+    /* ASSISTANT POPUP */
+    .assistant-button { position: fixed; bottom: 1.2rem; right: 1.2rem; width: 46px; height: 46px; border-radius: 50%; background: var(--accent); color: #0a0f0a; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; cursor: pointer; z-index: 999; border: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
+    .assistant-popup { position: fixed; top: 60px; right: 1.2rem; width: 250px; height: 380px; max-height: calc(100vh - 80px); background: var(--glass-bg); backdrop-filter: blur(12px); border-radius: 1rem; border: 1px solid var(--border); display: none; flex-direction: column; z-index: 1001; overflow: hidden; box-shadow: var(--shadow); }
+    .assistant-popup.show { display: flex; }
+    .assistant-header { background: rgba(0, 0, 0, 0.2); padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; color: var(--accent); font-size: 0.75rem; }
+    .assistant-messages { flex: 1; padding: 0.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.4rem; }
+    .message { max-width: 85%; padding: 0.4rem 0.6rem; border-radius: 0.8rem; font-size: 0.68rem; }
+    .assistant-message { background: var(--bg-surface); align-self: flex-start; border: 1px solid var(--border); }
+    .user-message { background: var(--accent); color: #0a0f0a; align-self: flex-end; }
+    .assistant-input { display: flex; padding: 0.4rem; border-top: 1px solid var(--border); gap: 0.3rem; background: var(--bg-surface); }
+    .assistant-input input { flex: 1; background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 0.3rem 0.6rem; color: var(--text-primary); font-size: 0.68rem; outline: none; }
+    .assistant-input button { background: var(--accent); border: none; border-radius: 1rem; padding: 0.2rem 0.6rem; cursor: pointer; font-size: 0.68rem; color: #0a0f0a; font-weight: bold; }
+    .back-to-top { position: fixed; bottom: 4.8rem; right: 1.2rem; width: 44px; height: 44px; border-radius: 50%; background: var(--bg-surface); border: 1px solid var(--border); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1rem; cursor: pointer; z-index: 998; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; box-shadow: var(--shadow); }
+    .back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+    @keyframes statusPulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* ========== UNIVERSAL MODAL SYSTEM ========== */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.88); backdrop-filter: blur(10px);
+      z-index: 9000; display: none; align-items: center; justify-content: center;
+      padding: 1rem; overflow-y: auto;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: 1.2rem; width: 100%; max-width: 520px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8); animation: modalIn 0.3s ease;
+      position: relative; max-height: 90vh; overflow-y: auto;
+    }
+    @keyframes modalIn { from { opacity:0; transform: scale(0.92) translateY(20px); } to { opacity:1; transform: scale(1) translateY(0); } }
+    .modal-header {
+      background: linear-gradient(135deg, rgba(0,230,118,0.15), rgba(0,0,0,0.2));
+      padding: 1rem 1.2rem; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      border-radius: 1.2rem 1.2rem 0 0;
+    }
+    .modal-header h3 { font-size: 1rem; color: var(--accent); font-family: 'Orbitron', sans-serif; }
+    .modal-close { background: none; border: none; color: var(--text-secondary); font-size: 1.1rem; cursor: pointer; padding: 0.2rem; border-radius: 50%; transition: 0.2s; }
+    .modal-close:hover { color: #ff5555; background: rgba(255,85,85,0.1); }
+    .modal-body { padding: 1.2rem; }
+
+    /* ========== DEPLOY BOT MODAL ========== */
+    .deploy-info-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 0.8rem; padding: 1rem; margin-bottom: 1rem;
+    }
+    .deploy-info-card p { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.6; }
+    .deploy-info-card h4 { font-size: 0.85rem; color: var(--accent); margin-bottom: 0.5rem; }
+    .payment-buttons-row {
+      display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin: 1rem 0;
+    }
+    .pay-btn {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.6rem;
+      padding: 0.55rem 1rem; font-size: 0.75rem; font-weight: 700; cursor: pointer;
+      color: var(--text-primary); transition: 0.2s; display: flex; align-items: center; gap: 0.4rem;
+      font-family: 'Orbitron', sans-serif;
+    }
+    .pay-btn:hover, .pay-btn.active { background: var(--accent); color: #0a0f0a; border-color: var(--accent); }
+    .pay-btn i { font-size: 0.9rem; }
+
+    /* Bot cards in deploy modal */
+    .bot-cards-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem; margin-top: 0.5rem;
+    }
+    @media (min-width: 700px) {
+      .bot-cards-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+    }
+    .bot-card-item {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.8rem;
+      padding: 0.8rem; position: relative; overflow: hidden; transition: 0.2s;
+    }
+    .bot-card-item:hover { border-color: var(--accent); }
+    .bot-card-img {
+      position: absolute; top: 0; right: 0; width: 52px; height: 52px;
+      border-radius: 0 0.8rem 0 0.5rem; object-fit: cover;
+      border-left: 2px solid var(--accent); border-bottom: 2px solid var(--accent);
+      opacity: 0.9;
+    }
+    .bot-card-name { font-weight: 800; font-size: 0.85rem; color: var(--text-primary); font-family: 'Orbitron', sans-serif; margin-bottom: 0.3rem; padding-right: 50px; }
+    .bot-card-desc { font-size: 0.68rem; color: var(--text-secondary); line-height: 1.4; margin-bottom: 0.6rem; }
+    .bot-card-btns { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .bot-action-btn {
+      background: var(--accent); color: #0a0f0a; border: none; border-radius: 1rem;
+      padding: 0.3rem 0.7rem; font-size: 0.65rem; font-weight: 700; cursor: pointer; transition: 0.2s;
+    }
+    .bot-action-btn.secondary { background: var(--bg-surface); color: var(--text-secondary); border: 1px solid var(--border); }
+    .bot-action-btn:hover { opacity: 0.85; }
+
+    /* ===== New "Available Bots" card layout: image -> actions -> name -> desc -> author/date ===== */
+    .bot-card-item-v2 {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.8rem;
+      overflow: hidden; transition: 0.2s; display: flex; flex-direction: column;
+    }
+    .bot-card-item-v2:hover { border-color: var(--accent); }
+    .bot-card-img-v2 { width: 100%; height: 110px; object-fit: cover; display: block; border-bottom: 1px solid var(--border); }
+    .bot-card-actions-row { display: flex; gap: 0.35rem; padding: 0.6rem 0.6rem 0; flex-wrap: wrap; }
+    .bot-card-actions-row .bot-action-btn { flex: 0 0 auto; white-space: nowrap; }
+    .bot-card-body-v2 { padding: 0.55rem 0.65rem 0.7rem; }
+    .bot-card-name-v2 { font-weight: 800; font-size: 0.82rem; color: var(--text-primary); font-family: 'Orbitron', sans-serif; margin-top: 0.4rem; line-height: 1.3; }
+    .bot-card-desc-v2 { font-size: 0.68rem; color: var(--text-secondary); line-height: 1.4; margin: 0.3rem 0 0.4rem; }
+    .bot-card-meta-v2 { display: flex; flex-direction: column; gap: 0.28rem; font-size: 0.6rem; color: var(--text-secondary); opacity: 0.6; font-style: normal; line-height: 1.3; }
+
+    /* Payment detail panels */
+    .payment-panel { display: none; animation: slideDownForm 0.25s ease; }
+    .payment-panel.active { display: block; }
+    .payment-panel-box {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.8rem;
+      padding: 1rem; margin-top: 0.5rem;
+    }
+    .payment-panel-box h4 { color: var(--accent); font-size: 0.85rem; margin-bottom: 0.5rem; }
+    .payment-panel-box p { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 0.5rem; }
+    .manual-number-row { display: flex; align-items: center; gap: 0.5rem; background: rgba(0,230,118,0.05); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.5rem 0.7rem; margin: 0.4rem 0; }
+    .manual-number-row span { font-size: 0.8rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+    .manual-number-row small { font-size: 0.65rem; color: var(--text-secondary); }
+    .paystack-btn-real { background: #0ba4db; color: #fff; border: none; border-radius: 0.5rem; padding: 0.6rem 1.5rem; font-weight: 700; font-size: 0.8rem; cursor: pointer; margin-top: 0.5rem; width: 100%; }
+    .coins-balance-row { display: flex; align-items: center; justify-content: space-between; background: rgba(0,230,118,0.08); border: 1px solid var(--accent); border-radius: 0.6rem; padding: 0.6rem 0.8rem; margin: 0.5rem 0; }
+    .coins-balance-row .balance-num { font-size: 1.5rem; font-weight: 900; color: var(--accent); font-family: 'Orbitron', sans-serif; }
+    .coins-needed { font-size: 0.75rem; color: var(--text-secondary); margin: 0.3rem 0; }
+    .coins-pay-btn { background: var(--accent); color: #0a0f0a; border: none; border-radius: 0.5rem; padding: 0.5rem 1.2rem; font-weight: 700; font-size: 0.75rem; cursor: pointer; width: 100%; margin-top: 0.5rem; }
+
+    /* ========== DEPLOYMENT PAGE ========== */
+    .deploy-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-body); z-index: 8500; overflow-y: auto; }
+    .deploy-page.active { display: block; }
+    .deploy-page-inner { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    .deploy-page-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.5rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); }
+    .deploy-page-header h2 { font-size: 1.2rem; background: linear-gradient(135deg, var(--accent), #b9f6ca); background-clip: text; -webkit-background-clip: text; color: transparent; }
+    .back-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); border-radius: 0.5rem; padding: 0.4rem 0.8rem; font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; }
+    .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Music player card */
+    .music-player-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem;
+      padding: 1rem 1.2rem; margin-bottom: 1.2rem;
+      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+    }
+    .music-player-card .music-icon { font-size: 2rem; color: var(--accent); }
+    .music-player-info { flex: 1; }
+    .music-player-info h4 { font-size: 0.85rem; margin-bottom: 0.2rem; }
+    .music-player-info p { font-size: 0.7rem; color: var(--text-secondary); }
+    .music-controls { display: flex; gap: 0.5rem; align-items: center; }
+    .music-ctrl-btn { background: var(--bg-surface); border: 1px solid var(--border); color: var(--accent); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
+    .music-ctrl-btn:hover, .music-ctrl-btn.playing { background: var(--accent); color: #0a0f0a; border-color: var(--accent); }
+    .music-progress { width: 100%; height: 4px; background: var(--border); border-radius: 2px; margin-top: 0.5rem; overflow: hidden; }
+    .music-progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width 0.5s linear; border-radius: 2px; }
+
+    /* How to deploy card */
+    .how-to-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem;
+      padding: 1rem 1.2rem; margin-bottom: 1.2rem;
+    }
+    .how-to-card h3 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.8rem; }
+    .step-item { display: flex; gap: 0.7rem; margin-bottom: 0.6rem; align-items: flex-start; }
+    .step-num { background: var(--accent); color: #0a0f0a; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 800; flex-shrink: 0; margin-top: 0.1rem; }
+    .step-item p { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.4; }
+
+    /* Platform selection */
+    .platform-select-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+    .platform-btn {
+      background: var(--bg-card); border: 2px solid var(--border); border-radius: 0.6rem;
+      padding: 0.6rem 1rem; font-size: 0.75rem; font-weight: 700; cursor: pointer;
+      color: var(--text-primary); transition: 0.2s; display: flex; align-items: center; gap: 0.5rem;
+      font-family: 'Orbitron', sans-serif; flex: 1; min-width: 130px; justify-content: center;
+    }
+    .platform-btn:hover, .platform-btn.selected { background: var(--accent); color: #0a0f0a; border-color: var(--accent); }
+    .platform-btn i { font-size: 1rem; }
+
+    /* Bot owner form */
+    .owner-form-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem;
+      padding: 1rem 1.2rem; margin-bottom: 1.2rem;
+    }
+    .owner-form-card h3 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.8rem; }
+    .form-group { margin-bottom: 0.7rem; }
+    .form-group label { display: block; font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 0.3rem; text-transform: uppercase; font-weight: 700; }
+    .form-input { width: 100%; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.5rem 0.7rem; color: var(--text-primary); font-size: 0.8rem; outline: none; font-family: inherit; transition: 0.2s; }
+    .form-input:focus { border-color: var(--accent); }
+
+    /* Pair section */
+    .pair-section-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem;
+      padding: 1rem 1.2rem; margin-bottom: 1.2rem;
+    }
+    .pair-section-card h3 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.8rem; }
+    .pair-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .pair-action-btn { background: var(--bg-surface); border: 1px solid var(--border); color: var(--text-primary); border-radius: 0.5rem; padding: 0.45rem 0.9rem; font-size: 0.73rem; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 0.4rem; }
+    .pair-action-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Session ID + Deploy */
+    .session-deploy-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem;
+      padding: 1rem 1.2rem; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+    }
+    .session-input-wrap { flex: 1; min-width: 200px; }
+    .session-input-wrap label { font-size: 0.7rem; color: var(--text-secondary); display: block; margin-bottom: 0.3rem; text-transform: uppercase; font-weight: 700; }
+    .deploy-action-btn { background: var(--accent); color: #0a0f0a; border: none; border-radius: 0.6rem; padding: 0.6rem 1.5rem; font-weight: 800; font-size: 0.85rem; cursor: pointer; font-family: 'Orbitron', sans-serif; transition: 0.2s; white-space: nowrap; }
+    .deploy-action-btn:hover { background: #b9f6ca; }
+
+    /* Deploy logs */
+    .deploy-logs-card { display: none; background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1rem 1.2rem; margin-bottom: 1.2rem; }
+    .deploy-logs-card.active { display: block; }
+    .deploy-logs-card h3 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.6rem; }
+    .logs-terminal { background: #000; border-radius: 0.6rem; padding: 0.8rem; max-height: 180px; overflow-y: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: #00e676; line-height: 1.6; }
+    .log-line { opacity: 0; animation: logAppear 0.3s forwards; }
+    @keyframes logAppear { to { opacity: 1; } }
+
+    /* ========== MANAGE BOT PAGE ========== */
+    .manage-bot-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-body); z-index: 8500; overflow-y: auto; }
+    .manage-bot-page.active { display: block; }
+    .manage-bot-inner { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    .bot-manage-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem;
+      padding: 1rem 1.2rem; margin-bottom: 1rem;
+    }
+    .bot-manage-card h4 { color: var(--accent); font-size: 0.85rem; margin-bottom: 0.4rem; }
+    .bot-manage-info { font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 0.6rem; }
+    .bot-manage-btns { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .manage-btn { border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.35rem 0.8rem; font-size: 0.68rem; font-weight: 700; cursor: pointer; transition: 0.2s; background: var(--bg-surface); color: var(--text-primary); }
+    .manage-btn.stop { color: #ff5555; border-color: rgba(255,85,85,0.3); }
+    .manage-btn.restart { color: var(--accent); border-color: rgba(0,230,118,0.3); }
+    .manage-btn:hover { border-color: var(--accent); }
+
+    /* ========== AV COINS PAGE ========== */
+    .coins-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-body); z-index: 8500; overflow-y: auto; }
+    .coins-page.active { display: block; }
+    .coins-page-inner { max-width: 700px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    .coins-info-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem;
+      padding: 1.2rem; margin-bottom: 1rem;
+    }
+    .coins-info-card h3 { color: var(--accent); font-size: 1rem; margin-bottom: 0.6rem; }
+    .coins-info-card p { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.6; }
+    .coins-stats-row { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .coins-stat-card { flex: 1; min-width: 140px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem; padding: 1rem; text-align: center; }
+    .coins-stat-card .big-num { font-size: 2rem; font-weight: 900; color: var(--accent); font-family: 'Orbitron', sans-serif; }
+    .coins-stat-card p { font-size: 0.68rem; color: var(--text-secondary); margin-top: 0.2rem; }
+    .coins-earn-btn { background: var(--accent); color: #0a0f0a; border: none; border-radius: 1rem; padding: 0.9rem 1.5rem; font-weight: 800; font-size: 0.85rem; cursor: pointer; font-family: 'Orbitron', sans-serif; width: 100%; transition: 0.2s; flex: 1; min-width: 140px; }
+    .coins-earn-btn:hover { background: #b9f6ca; }
+    .my-link-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem;
+      padding: 1rem 1.2rem; margin-bottom: 1rem;
+    }
+    .my-link-card h3 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.6rem; }
+    .link-display { background: var(--bg-surface); border: 1px dashed var(--accent); border-radius: 0.5rem; padding: 0.5rem 0.7rem; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 0.6rem; word-break: break-all; min-height: 2rem; display: flex; align-items: center; }
+    .link-btns-row { display: flex; gap: 0.5rem; }
+    .link-action-btn { flex: 1; background: var(--bg-surface); border: 1px solid var(--border); color: var(--text-primary); border-radius: 0.5rem; padding: 0.4rem; font-size: 0.72rem; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.3rem; }
+    .link-action-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .generate-link-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 1rem;
+      padding: 1rem 1.2rem; margin-bottom: 1rem;
+    }
+    .generate-link-card h3 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.6rem; }
+    .gen-link-btn { background: var(--accent); color: #0a0f0a; border: none; border-radius: 0.5rem; padding: 0.55rem 1.5rem; font-weight: 800; font-size: 0.78rem; cursor: pointer; width: 100%; margin-top: 0.5rem; font-family: 'Orbitron', sans-serif; }
+    .gen-success-msg { color: var(--accent); font-size: 0.72rem; margin-top: 0.4rem; display: none; }
+
+    /* ========== DEPLOYER ACCOUNT ========== */
+    .deployer-modal-content { }
+    .deployer-info-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.8rem; padding: 1rem; margin-bottom: 1rem; }
+    .deployer-info-card h4 { color: var(--accent); font-size: 0.85rem; margin-bottom: 0.4rem; }
+    .deployer-info-card p { font-size: 0.73rem; color: var(--text-secondary); line-height: 1.5; }
+    .deployer-price-tag { display: inline-block; background: rgba(0,230,118,0.15); border: 1px solid var(--accent); border-radius: 0.5rem; padding: 0.3rem 0.7rem; font-size: 0.8rem; font-weight: 800; color: var(--accent); margin: 0.5rem 0; font-family: 'Orbitron', sans-serif; }
+    .deployer-benefits { list-style: none; margin-top: 0.5rem; }
+    .deployer-benefits li { font-size: 0.72rem; color: var(--text-secondary); padding: 0.25rem 0; display: flex; align-items: center; gap: 0.4rem; }
+    .deployer-benefits li i { color: var(--accent); font-size: 0.7rem; }
+    .deployer-pay-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .deployer-pay-btn { flex: 1; min-width: 130px; background: var(--bg-card); border: 2px solid var(--border); border-radius: 0.6rem; padding: 0.6rem; font-size: 0.75rem; font-weight: 700; cursor: pointer; color: var(--text-primary); transition: 0.2s; text-align: center; font-family: 'Orbitron', sans-serif; }
+    .deployer-pay-btn:hover, .deployer-pay-btn.active { background: var(--accent); color: #0a0f0a; border-color: var(--accent); }
+    .create-deployer-big-btn { background: var(--accent); color: #0a0f0a; border: none; border-radius: 0.7rem; padding: 0.8rem; font-weight: 800; font-size: 0.85rem; cursor: pointer; width: 100%; margin-top: 0.5rem; font-family: 'Orbitron', sans-serif; }
+    .deployer-subscription-card { background: linear-gradient(135deg, rgba(0,230,118,0.1), rgba(0,0,0,0.2)); border: 1px solid var(--accent); border-radius: 1rem; padding: 1.2rem; margin-bottom: 1rem; text-align: center; }
+    .subscription-time { font-size: 2rem; font-weight: 900; color: var(--accent); font-family: 'Orbitron', sans-serif; }
+    .subscription-label { font-size: 0.7rem; color: var(--text-secondary); }
+    .deployer-bots-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+    @media (min-width: 700px) { .deployer-bots-grid { grid-template-columns: repeat(4, 1fr); } }
+    .delete-account-btn { background: rgba(255,85,85,0.1); border: 1px solid rgba(255,85,85,0.3); color: #ff5555; border-radius: 0.5rem; padding: 0.5rem 1rem; font-size: 0.75rem; font-weight: 700; cursor: pointer; width: 100%; margin-top: 1rem; transition: 0.2s; }
+    .delete-account-btn:hover { background: rgba(255,85,85,0.2); }
+
+    /* ========== TUTORIALS VIDEO MODAL ========== */
+    .tutorial-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .tutorial-item { display: flex; align-items: center; gap: 0.7rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 0.7rem; padding: 0.7rem 0.9rem; cursor: pointer; transition: 0.2s; }
+    .tutorial-item:hover { border-color: var(--accent); }
+    .tutorial-item i { color: var(--accent); font-size: 1.1rem; flex-shrink: 0; }
+    .tutorial-item-text h4 { font-size: 0.8rem; color: var(--text-primary); margin-bottom: 0.1rem; }
+    .tutorial-item-text p { font-size: 0.65rem; color: var(--text-secondary); }
+    .video-player-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; align-items: center; justify-content: center; }
+    .video-player-overlay.active { display: flex; flex-direction: column; }
+    .video-container { width: 90%; max-width: 700px; background: #000; border-radius: 0.8rem; overflow: hidden; border: 1px solid var(--accent); }
+    .video-container video { width: 100%; display: block; }
+    .video-placeholder { background: #111; padding: 3rem; text-align: center; }
+    .video-placeholder p { color: var(--text-secondary); font-size: 0.8rem; }
+    .video-close-btn { background: var(--accent); color: #0a0f0a; border: none; border-radius: 0.5rem; padding: 0.5rem 1.5rem; font-weight: 700; font-size: 0.8rem; cursor: pointer; margin-top: 1rem; }
+    .video-title-bar { color: var(--accent); font-family: 'Orbitron', sans-serif; font-size: 0.85rem; margin-bottom: 0.8rem; text-align: center; }
+    .video-controls-row { display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.6rem; }
+    .vid-ctrl-btn { background: var(--bg-surface); border: 1px solid var(--border); color: var(--accent); border-radius: 0.4rem; padding: 0.3rem 0.7rem; font-size: 0.72rem; cursor: pointer; transition: 0.2s; }
+    .vid-ctrl-btn:hover { background: var(--accent); color: #0a0f0a; }
+
+    @media (max-width: 600px) {
+      .slide-card { height: 200px; }
+      .nav-center { font-size: 1rem; }
+      .assistant-popup { width: 240px; right: 0.6rem; }
+      .profile-popup { width: 155px; right: 0px; }
+      #toastContainer { top: 8px; }
+      .toast-box { max-width: 270px; padding: 0.5rem 0.8rem; font-size: 0.72rem; }
+    }
+  </style>
+</head>
+<body id="top">
+
+<div id="toastContainer"></div>
+
+<nav class="navbar">
+  <div class="container nav-container">
+    <div class="nav-left">
+      <button class="hamburger" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
+    </div>
+    <div class="nav-center">Adevos-X Tech</div>
+    <div class="nav-right">
+      <div class="profile-avatar" id="profileAvatar">AX</div>
+      <div class="profile-popup" id="profilePopup">
+        <div class="popup-user-info">
+          <div class="popup-avatar-small" id="popupAvatarSmall">AX</div>
+          <div class="popup-user-text">
+            <div class="popup-user-name" id="popupUserName">Adevos X</div>
+            <div class="popup-user-email" id="popupUserEmail">adevosxtech@gmail.com</div>
+          </div>
+        </div>
+        <div class="popup-settings-btn" id="settingsBtn"><i class="fas fa-sliders-h"></i> <span>Settings</span></div>
+        <div class="settings-submenu" id="settingsSubmenu">
+          <div class="setting-item">
+            <label>PROFILE PHOTO</label>
+            <div class="photo-upload-row">
+              <div class="popup-avatar-preview-small" id="popupAvatarPreviewSmall">AX</div>
+              <label class="upload-photo-btn-small" for="profilePhotoFileCompact"><i class="fas fa-camera"></i> Upload</label>
+              <input type="file" id="profilePhotoFileCompact" accept="image/*" style="display:none;">
+            </div>
+          </div>
+          <div class="setting-item">
+            <label>DISPLAY NAME</label>
+            <input type="text" id="profileNameInputCompact" class="setting-input" value="Adevos X">
+            <button class="setting-button" id="updateProfileBtnCompact">Save</button>
+          </div>
+          <div class="setting-item">
+            <label>THEME</label>
+            <div class="options-list-compact" id="themeOptionsCompact">
+              <div class="option-item-compact" data-theme="dark">Dark</div>
+              <div class="option-item-compact" data-theme="light">Light</div>
+            </div>
+          </div>
+        </div>
+        <div class="popup-logout" id="logoutBtnPopup"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></div>
+        <div class="popup-provider" id="popupProviderInfo"></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="sidebar" id="sidebar">
+  <div class="close-sidebar" id="closeSidebar"><i class="fas fa-times"></i></div>
+  <div class="sidebar-search-box">
+    <div class="search-input-wrapper">
+      <i class="fas fa-search"></i>
+      <input type="text" id="menuSearchInput" placeholder="Search bar..." autocomplete="off">
+    </div>
+    <div class="search-suggestions-dropdown" id="searchSuggestionsDropdown"></div>
+  </div>
+  <div class="menu-accordion">
+    <div class="accordion-item">
+      <div class="accordion-header"><div class="accordion-title-wrapper"><i class="fas fa-home"></i><span>Home</span></div><i class="fas fa-chevron-down chevron-icon"></i></div>
+      <div class="accordion-content"><ul class="sub-menu-list"><li><a href="#top" id="menuDashboardLink"><i class="fas fa-th-large"></i> Dashboard</a></li></ul></div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header">
+        <div class="accordion-title-wrapper"><i class="fas fa-bell"></i><span>Updates</span></div>
+        <span class="notif-badge" id="menuNotifBadge">4</span>
+        <i class="fas fa-chevron-down chevron-icon"></i>
+      </div>
+      <div class="accordion-content"><ul class="sub-menu-list"><li><a href="#" id="menuUpdatesLink"><i class="fas fa-newspaper"></i> Latest News</a></li></ul></div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header"><div class="accordion-title-wrapper"><i class="fas fa-cloud-upload-alt"></i><span>Bot Deployment</span></div><i class="fas fa-chevron-down chevron-icon"></i></div>
+      <div class="accordion-content">
+        <ul class="sub-menu-list">
+          <li><a href="#" id="menuDeployBotLink"><i class="fas fa-robot"></i> Deploy bot</a></li>
+          <li><a href="#" id="menuManageBotLink"><i class="fas fa-tasks"></i> Manage your bot</a></li>
+          <li><a href="#" id="menuCoinsLink"><i class="fas fa-coins"></i> My Adevos Coins <span style="color:var(--accent); font-weight:700;">[AV]</span></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header"><div class="accordion-title-wrapper"><i class="fas fa-user-circle"></i><span>My Account</span></div><i class="fas fa-chevron-down chevron-icon"></i></div>
+      <div class="accordion-content">
+        <ul class="sub-menu-list">
+          <li><a href="#" id="menuUserAccountLink"><i class="fas fa-user"></i> User Account</a></li>
+          <li><a href="#" id="menuDeployerAccountLink"><i class="fas fa-user-shield"></i> Deployer Account</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header"><div class="accordion-title-wrapper"><i class="fas fa-graduation-cap"></i><span>Tutorials</span></div><i class="fas fa-chevron-down chevron-icon"></i></div>
+      <div class="accordion-content">
+        <ul class="sub-menu-list" id="tutorialSidebarList"></ul>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header"><div class="accordion-title-wrapper"><i class="fas fa-comment-alt"></i><span>Feedback</span></div><i class="fas fa-chevron-down chevron-icon"></i></div>
+      <div class="accordion-content"><ul class="sub-menu-list"><li><a href="#feedback-section-anchor" id="menuFeedbackLink"><i class="fas fa-paper-plane"></i> Send your feedback</a></li></ul></div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header"><div class="accordion-title-wrapper"><i class="fas fa-headset"></i><span>Support</span></div><i class="fas fa-chevron-down chevron-icon"></i></div>
+      <div class="accordion-content">
+        <ul class="sub-menu-list">
+          <li><a href="#" id="menuGetSupportTrigger"><i class="fas fa-users"></i> Community</a></li>
+          <li><a href="#" id="menuWaChannelLink"><i class="fab fa-whatsapp"></i> WhatsApp channel</a></li>
+          <li><a href="#" id="menuTgChannelLink"><i class="fab fa-telegram-plane"></i> Telegram channel</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header"><div class="accordion-title-wrapper"><i class="fas fa-code"></i><span>Developer</span></div><i class="fas fa-chevron-down chevron-icon"></i></div>
+      <div class="accordion-content"><ul class="sub-menu-list"><li><a href="#feedback-section-anchor" id="menuMeetDeveloperLink"><i class="fas fa-user-astronaut"></i> Meet a Developer</a></li></ul></div>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="overlay"></div>
+
+<main class="container">
+  <div class="slider-section">
+    <div class="slider-track" id="sliderTrack"></div>
+  </div>
+  <div class="services-section">
+    <div class="section-header"><h2>Our Services</h2><p>(What we offer)</p></div>
+    <div class="services-grid" id="servicesGrid"></div>
+  </div>
+  <div class="get-in-touch-section" id="feedback-section-anchor">
+    <div class="section-header"><h2>Get in touch</h2></div>
+    <div class="get-in-touch-grid" id="getInTouchGrid"></div>
+  </div>
+  <div class="feedback-section">
+    <div class="section-header"><h2>Client feedback</h2></div>
+    <div class="feedback-grid" id="feedbackGrid"></div>
+  </div>
+  <div class="stay-connected">
+    <h3>Stay Connected</h3>
+    <p>Follow us and subscribe</p>
+    <div class="social-links" id="socialLinksRow"></div>
+    <div class="newsletter">
+      <input type="email" id="newsletterEmail" placeholder="Your email">
+      <button id="newsletterBtn">Subscribe</button>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col"><h4>SERVICES</h4><ul><li><a href="#">Web Development</a></li><li><a href="#">WhatsApp Bots</a></li><li><a href="#">Bot Deployment</a></li><li><a href="#">AI Solutions</a></li></ul></div>
+      <div class="footer-col"><h4>COMPANY</h4><ul><li><a href="#">About Us</a></li><li><a href="#">Our Team</a></li></ul></div>
+      <div class="footer-col"><h4>LEGAL</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Use</a></li></ul></div>
+      <div class="footer-col"><h4>RESOURCES</h4><ul><li><a href="#">Docs</a></li><li><a href="#">Tutorials</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><p>© 2026 Adevos-X Tech. All rights reserved.</p></div>
+  </div>
+</footer>
+
+<div class="back-to-top" id="backToTopBtn"><i class="fas fa-arrow-up"></i></div>
+<div class="assistant-button" id="assistantBtn"><i class="fas fa-robot"></i></div>
+<div class="assistant-popup" id="assistantPopup">
+  <div class="assistant-header"><span><i class="fas fa-headset"></i> Adevos Assistant</span><i class="fas fa-times" id="closeAssistant"></i></div>
+  <div class="assistant-messages" id="assistantMessages"></div>
+  <div class="assistant-input"><input type="text" id="assistantInput" placeholder="Type..."><button id="assistantSend">Send</button></div>
+</div>
+
+<!-- ========== DEPLOY BOT MODAL ========== -->
+<div class="modal-overlay" id="deployBotModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3><i class="fas fa-robot"></i> Deploy Bot</h3>
+      <button class="modal-close" onclick="closeModal('deployBotModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="deploy-info-card">
+        <h4><i class="fas fa-info-circle"></i> Deployment Information</h4>
+        <p id="deployModalDesc">Choose your bot, select a payment method, and deploy your bot in under 2 minutes. Our infrastructure guarantees 99% uptime with automatic restarts and real-time monitoring.</p>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:center; margin-bottom:0.5rem;">
+        <p style="font-size:0.72rem; color:var(--text-secondary);">Select payment method:</p>
+      </div>
+      <div class="payment-buttons-row" id="paymentButtonsRow"></div>
+
+      <!-- Paystack Panel -->
+      <div class="payment-panel" id="paystackPanel">
+        <div class="payment-panel-box">
+          <h4><i class="fas fa-credit-card"></i> Pay with Paystack</h4>
+          <p>Securely pay via Paystack using your card, bank transfer, or mobile money. Amount: <strong style="color:var(--accent);" id="paystackAmountLabel">$5 USD / Month</strong></p>
+          <p>You will be redirected to Paystack's secure checkout. After payment confirmation, your deployment slot will be unlocked automatically.</p>
+          <button class="paystack-btn-real" onclick="initiatePaystackPayment()"><i class="fas fa-lock"></i> <span id="paystackPayBtnLabel">Proceed to Pay</span></button>
+          <div id="paystackConfirmWrap" style="display:none;margin-top:0.7rem;padding-top:0.6rem;border-top:1px dashed var(--border);">
+            <p style="font-size:0.68rem;color:var(--accent);margin-bottom:0.4rem;"><i class="fas fa-check-circle"></i> Completed your Paystack payment? Click below to confirm (Demo).</p>
+            <button class="pay-btn" style="width:100%;justify-content:center;" onclick="confirmPaystackPayment()"><i class="fas fa-check"></i> Confirm Payment</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Manual Panel -->
+      <div class="payment-panel" id="manualPanel">
+        <div class="payment-panel-box">
+          <h4><i class="fas fa-hand-holding-usd"></i> Manual Payment</h4>
+          <p>Send payment to any of the numbers below then screenshot and send proof to our WhatsApp.</p>
+          <div id="manualNumbersList"></div>
+          <button class="pay-btn" style="width:100%;justify-content:center;margin-top:0.5rem;" onclick="confirmManualPayment()"><i class="fas fa-check"></i> I've Sent Payment — Verify (Demo)</button>
+        </div>
+      </div>
+
+      <!-- Coins Panel -->
+      <div class="payment-panel" id="coinsPanel">
+        <div class="payment-panel-box">
+          <h4><i class="fas fa-coins"></i> Pay with AV Coins</h4>
+          <p>Use your earned Adevos Coins [AV] to deploy your bot. Each deployment costs <strong style="color:var(--accent);" id="coinsCostLabel">50 AV Coins</strong>.</p>
+          <div class="coins-balance-row">
+            <div><div style="font-size:0.65rem;color:var(--text-secondary);">Your Balance</div><div class="balance-num" id="deployCoinsBalance">0</div></div>
+            <div><i class="fas fa-coins" style="font-size:2rem;color:var(--accent);opacity:0.6;"></i></div>
+          </div>
+          <p class="coins-needed">Required: <strong style="color:var(--accent);" id="coinsRequiredLabel">50 AV Coins</strong></p>
+          <button class="coins-pay-btn" onclick="payWithCoins()"><i class="fas fa-coins"></i> Pay with AV Coins & Deploy</button>
+        </div>
+      </div>
+
+      <!-- Bot List -->
+      <div style="margin-top:1rem;">
+        <p style="font-size:0.72rem; color:var(--text-secondary); margin-bottom:0.6rem; font-weight:700; text-transform:uppercase; font-family:'Orbitron',sans-serif;">Available Bots</p>
+        <div class="bot-cards-grid" id="botCardsGrid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MANAGE BOT MODAL (no active bot) ========== -->
+<div class="modal-overlay" id="manageBotModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3><i class="fas fa-tasks"></i> Manage Your Bot</h3>
+      <button class="modal-close" onclick="closeModal('manageBotModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="manageBotModalBody">
+      <!-- Filled dynamically -->
+    </div>
+  </div>
+</div>
+
+<!-- ========== DEPLOYER ACCOUNT MODAL ========== -->
+<div class="modal-overlay" id="deployerAccountModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3><i class="fas fa-user-shield"></i> Deployer Account</h3>
+      <button class="modal-close" onclick="closeModal('deployerAccountModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="deployerAccountModalBody">
+      <!-- Filled dynamically -->
+    </div>
+  </div>
+</div>
+
+<!-- ========== TUTORIALS MODAL ========== -->
+<div class="modal-overlay" id="tutorialsModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3><i class="fas fa-graduation-cap"></i> Tutorials</h3>
+      <button class="modal-close" onclick="closeModal('tutorialsModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="tutorial-list" id="tutorialList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== VIDEO PLAYER OVERLAY ========== -->
+<div class="video-player-overlay" id="videoPlayerOverlay">
+  <div class="video-title-bar" id="videoTitleBar"></div>
+  <div class="video-container">
+    <div class="video-placeholder" id="videoPlaceholderBox">
+      <i class="fas fa-play-circle" style="font-size:3rem;color:var(--accent);"></i>
+      <p id="videoPlaceholderText" style="margin-top:0.8rem;"></p>
+    </div>
+  </div>
+  <div class="video-controls-row">
+    <button class="vid-ctrl-btn" id="vidPlayBtn" onclick="toggleVideoPlay()"><i class="fas fa-play"></i> Play</button>
+    <button class="vid-ctrl-btn" onclick="replayVideo()"><i class="fas fa-redo"></i> Replay</button>
+    <button class="vid-ctrl-btn" onclick="closeVideoPlayer()"><i class="fas fa-times"></i> Close</button>
+  </div>
+</div>
+
+<!-- ========== DEPLOYMENT PAGE ========== -->
+<div class="deploy-page" id="deployPage">
+  <div class="deploy-page-inner">
+    <div class="deploy-page-header">
+      <button class="back-btn" onclick="closeDeployPage()"><i class="fas fa-arrow-left"></i> Back</button>
+      <h2><i class="fas fa-rocket"></i> Bot Deployment</h2>
+    </div>
+
+    <!-- Music Player -->
+    <div class="music-player-card">
+      <div class="music-icon"><i class="fas fa-music"></i></div>
+      <div class="music-player-info">
+        <h4>Deployment Vibes 🎵</h4>
+        <p id="currentTrackName">Cyber Pulse — Adevos Mix</p>
+        <div class="music-progress"><div class="music-progress-bar" id="musicProgressBar"></div></div>
+      </div>
+      <div class="music-controls">
+        <div class="music-ctrl-btn" onclick="prevTrack()"><i class="fas fa-backward"></i></div>
+        <div class="music-ctrl-btn" id="playPauseBtn" onclick="toggleMusic()"><i class="fas fa-play"></i></div>
+        <div class="music-ctrl-btn" onclick="nextTrack()"><i class="fas fa-forward"></i></div>
+      </div>
+    </div>
+
+    <!-- How To Deploy -->
+    <div class="how-to-card">
+      <h3><i class="fas fa-info-circle"></i> How to Deploy Your Bot</h3>
+      <div class="step-item"><div class="step-num">1</div><p>Fill in your Owner Name and Owner Number in the form below.</p></div>
+      <div class="step-item"><div class="step-num">2</div><p>Select your preferred deployment platform.</p></div>
+      <div class="step-item"><div class="step-num">3</div><p>Click the Pair button to generate your Session ID, then paste it below.</p></div>
+      <div class="step-item"><div class="step-num">4</div><p>Click Deploy — your bot will be live in seconds!</p></div>
+    </div>
+
+    <!-- Platform Selection -->
+    <div style="margin-bottom:1.2rem;">
+      <p style="font-size:0.72rem;color:var(--text-secondary);margin-bottom:0.6rem;text-transform:uppercase;font-weight:700;font-family:'Orbitron',sans-serif;">Select Platform</p>
+      <div class="platform-select-row" id="platformSelectRow"></div>
+    </div>
+
+    <!-- Owner Info Form -->
+    <div class="owner-form-card">
+      <h3><i class="fas fa-user"></i> Bot Owner Information</h3>
+      <div class="form-group">
+        <label>Owner Name</label>
+        <input type="text" class="form-input" id="ownerNameInput" placeholder="e.g. John Doe">
+      </div>
+      <div class="form-group">
+        <label>Owner Number (with country code)</label>
+        <input type="tel" class="form-input" id="ownerNumberInput" placeholder="e.g. +255712345678">
+      </div>
+    </div>
+
+    <!-- Pair Section -->
+    <div class="pair-section-card">
+      <h3><i class="fas fa-link"></i> Pair Your Device</h3>
+      <p style="font-size:0.72rem;color:var(--text-secondary);margin-bottom:0.7rem;">Generate your Session ID by pairing your WhatsApp/Telegram number.</p>
+      <div class="pair-actions">
+        <button class="pair-action-btn" onclick="openPairShare()"><i class="fas fa-share-alt"></i> Share</button>
+        <button class="pair-action-btn" onclick="openPairFront()"><i class="fas fa-external-link-alt"></i> Open Pairing Page</button>
+      </div>
+    </div>
+
+    <!-- Session ID + Deploy -->
+    <div class="session-deploy-card">
+      <div class="session-input-wrap">
+        <label>Paste your Session ID here</label>
+        <input type="text" class="form-input" id="sessionIdInput" placeholder="e.g. ADEVOS~xxxx...">
+      </div>
+      <button class="deploy-action-btn" onclick="startDeployment()">Deploy</button>
+    </div>
+
+    <!-- Logs -->
+    <div class="deploy-logs-card" id="deployLogsCard">
+      <h3><i class="fas fa-terminal"></i> Deployment Logs</h3>
+      <div class="logs-terminal" id="deployLogsTerminal"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== USER ACCOUNT PAGE ========== -->
+<div class="manage-bot-page" id="userAccountPage">
+  <div class="manage-bot-inner">
+    <div class="deploy-page-header">
+      <button class="back-btn" onclick="closeUserAccountPage()"><i class="fas fa-arrow-left"></i> Back</button>
+      <h2><i class="fas fa-user"></i> User Account</h2>
+    </div>
+    <div id="userAccountPageContent"></div>
+  </div>
+</div>
+
+<!-- ========== MANAGE BOT PAGE ========== -->
+<div class="manage-bot-page" id="manageBotPage">
+  <div class="manage-bot-inner">
+    <div class="deploy-page-header">
+      <button class="back-btn" onclick="closeManagePage()"><i class="fas fa-arrow-left"></i> Back</button>
+      <h2><i class="fas fa-tasks"></i> Manage Your Bots</h2>
+    </div>
+    <div id="manageBotPageContent"></div>
+  </div>
+</div>
+
+<!-- ========== AV COINS PAGE ========== -->
+<div class="coins-page" id="coinsPage">
+  <div class="coins-page-inner">
+    <div class="deploy-page-header">
+      <button class="back-btn" onclick="closeCoinsPage()"><i class="fas fa-arrow-left"></i> Back</button>
+      <h2><i class="fas fa-coins"></i> Adevos Coins [AV]</h2>
+    </div>
+    <!-- Info card -->
+    <div class="coins-info-card">
+      <h3><i class="fas fa-coins"></i> What are AV Coins?</h3>
+      <p>AV Coins (Adevos Coins) are the official reward currency of the Adevos-X ecosystem. In short, these are coins you earn by sharing the website link with others. The system generates a unique referral link for you — when someone joins using your link, you automatically receive <strong style="color:var(--accent);" id="coinsInfoReferralBonus">2 AV Coins</strong>. You can use these coins to deploy bots, unlock premium features, and access exclusive services without spending real money. Every referral brings you closer to free deployments!</p>
+    </div>
+    <!-- Stats + Earn -->
+    <div class="coins-stats-row">
+      <div class="coins-stat-card">
+        <div class="big-num" id="coinsPageBalance">0</div>
+        <p>Available AV Coins</p>
+      </div>
+      <button class="coins-earn-btn" onclick="scrollToGenerateLink()"><i class="fas fa-rocket"></i> Start Earning</button>
+    </div>
+    <!-- My Link -->
+    <div class="my-link-card">
+      <h3><i class="fas fa-link"></i> My Link</h3>
+      <div class="link-display" id="myReferralLinkDisplay">No link generated yet.</div>
+      <div class="link-btns-row">
+        <button class="link-action-btn" onclick="copyMyLink()"><i class="fas fa-copy"></i> Copy</button>
+        <button class="link-action-btn" onclick="shareMyLink()"><i class="fas fa-share-alt"></i> Share</button>
+      </div>
+    </div>
+    <!-- Generate Link -->
+    <div class="generate-link-card" id="generateLinkSection">
+      <h3><i class="fas fa-magic"></i> Generate Your Referral Link</h3>
+      <p style="font-size:0.7rem;color:var(--text-secondary);margin-bottom:0.6rem;">Your link is generated automatically from your logged-in account.</p>
+      <button class="gen-link-btn" onclick="generateReferralLink()"><i class="fas fa-magic"></i> Generate / Refresh Link</button>
+      <div class="gen-success-msg" id="genSuccessMsg"><i class="fas fa-check-circle"></i> Generated successfully! Your link is displayed above.</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* =========================================================================
+   ADEVOS-X PUBLIC SITE — backend-integrated version
+   Change API_BASE below when you deploy the backend (e.g. to Render).
+   ========================================================================= */
+const API_BASE = window.ADEVOS_API_BASE || '/api';
+
+/* ===================== APP STATE ===================== */
+const AppState = {
+  slides: [], services: [], touchcards: [], updates: [], feedback: [],
+  bots: [], featuredBot: null, tutorials: [], platforms: [], paymentMethods: [],
+  settings: { social: [], links: {}, music: {}, notifications: {}, pricing: {}, deployer: {} },
+  currentUser: null, // { _id, name, email, plan, coins, ... }
+};
+
+let slideIndex = 0;
+let hasUserReadUpdates = false;
+let toastTimeLimitExceeded = false;
+let selectedPlatform = '';
+let selectedPaymentMethod = ''; // 'paystack' | 'manual' | 'coins'
+let isDeployerMode = false;
+let paymentConfirmed = false;
+let pendingTransactionId = null;
+let currentDeployBotIndex = 0;
+let musicPlaying = false;
+let musicProgress = 0;
+let musicInterval = null;
+let currentTrack = 0;
+let audioEl = null;
+
+/* ===================== API HELPER ===================== */
+function authToken() { return localStorage.getItem('adevosToken') || ''; }
+async function api(path, opts = {}) {
+  const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+  const token = authToken();
+  if (token) headers.Authorization = `Bearer ${token}`;
+  const res = await fetch(API_BASE + path, { ...opts, headers, body: opts.body ? JSON.stringify(opts.body) : undefined });
+  let data = null;
+  try { data = await res.json(); } catch (e) {}
+  if (!res.ok) throw Object.assign(new Error(data?.error || `Request failed (${res.status})`), { status: res.status, data });
+  return data;
+}
+const apiGet = (path) => api(path);
+const apiPost = (path, body) => api(path, { method: 'POST', body });
+const apiPut = (path, body) => api(path, { method: 'PUT', body });
+
+/* ===================== BOOTSTRAP: LOAD EVERYTHING ===================== */
+async function bootstrapApp() {
+  handleOAuthRedirectToken();
+  await Promise.all([loadUserIfLoggedIn(), loadAllContent()]);
+  renderSlides(); renderServices(); renderGetInTouch(); renderFeedback();
+  renderSocialLinks(); renderSidebarDynamicLinks(); updateNavProfile();
+  setInterval(nextSlide, 5000);
+  setTimeout(observeElements, 200);
+  startToastSystemFromSettings();
+}
+
+function handleOAuthRedirectToken() {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('token');
+  if (token) {
+    localStorage.setItem('adevosToken', token);
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+}
+
+async function loadUserIfLoggedIn() {
+  if (!authToken()) return;
+  try {
+    AppState.currentUser = await apiGet('/public/me');
+  } catch (e) {
+    localStorage.removeItem('adevosToken');
+  }
+}
+
+async function loadAllContent() {
+  const [slides, services, touchcards, updates, feedback, bots, featuredBot, tutorials, platforms, paymentMethods, settings] = await Promise.all([
+    apiGet('/public/slides'), apiGet('/public/services'), apiGet('/public/touchcards'),
+    apiGet('/public/updates'), apiGet('/public/testimonials'), apiGet('/public/bots'),
+    apiGet('/public/bots/featured'), apiGet('/public/tutorials'), apiGet('/public/platforms'),
+    apiGet('/public/payment-methods'), apiGet('/public/settings'),
+  ]);
+  Object.assign(AppState, { slides, services, touchcards, updates, feedback, bots, featuredBot, tutorials, platforms, paymentMethods, settings });
+}
+
+/* ===================== RENDERING: HOMEPAGE ===================== */
+function handleSlideAction(actionType, action, url) {
+  if (actionType === 'external') { if (url) window.open(url, '_blank'); return; }
+  const map = {
+    support: () => { const c=document.getElementById('mainSupportCardTarget'); if(c){c.scrollIntoView({behavior:'smooth',block:'center'});const d=document.getElementById('supportDropdownLinksWrap');if(d)d.classList.add('active');c.classList.add('highlight-dev-border');setTimeout(()=>c.classList.remove('highlight-dev-border'),2500);} },
+    tutorials: () => { openTutorialsModal(); },
+    coins: () => { openCoinsPage(); },
+    deployer: () => { openDeployerAccountModal(); }
+  };
+  if(map[action]) map[action]();
+}
+function renderSlides() {
+  document.getElementById('sliderTrack').innerHTML = AppState.slides.map((s, i) => `
+    <div class="slide-card" style="background-image:url(${s.img});background-position:${s.imagePosition||'center center'};cursor:pointer;" onclick='handleSlideAction(${JSON.stringify(s.actionType||"internal")},${JSON.stringify(s.action||"")},${JSON.stringify(s.url||"")})'>
+      <div class="slide-overlay"><div class="slide-text"><h2>${s.title}</h2><a class="cta-button" onclick='event.stopPropagation();handleSlideAction(${JSON.stringify(s.actionType||"internal")},${JSON.stringify(s.action||"")},${JSON.stringify(s.url||"")})'>${s.cta||""} →</a></div></div>
+    </div>`).join('') || '';
+  updateSliderPosition();
+}
+function renderServices() {
+  document.getElementById('servicesGrid').innerHTML = AppState.services.map(s => `
+    <div class="service-card"><div class="service-icon"><i class="${s.icon}"></i></div><h3>${s.title}</h3><p>${s.desc}</p></div>`).join('');
+}
+function renderGetInTouch() {
+  document.getElementById('getInTouchGrid').innerHTML = AppState.touchcards.map(t => {
+    const key = t.key;
+    if(key === 'feedback') return `
+      <div class="touch-card" id="mainFeedbackTargetCard">
+        <img src="${t.img}" class="touch-img" alt="${t.title}">
+        <div class="touch-content"><h3>${t.title}</h3><p>${t.desc}</p>
+          <button class="send-now-trigger-btn" id="inlineFormTriggerBtn">${t.btn||'Send Now'}</button>
+        </div>
+        <div class="inline-feedback-form-container" id="inlineFeedbackFormWrap">
+          <form id="ajaxFeedbackCoreForm">
+            <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY_HERE">
+            <input type="checkbox" name="botcheck" style="display:none;">
+            <label class="feedback-form-label">Full Name</label>
+            <input type="text" name="name" class="feedback-input-element" placeholder="e.g. John Doe" required>
+            <label class="feedback-form-label">Email Address</label>
+            <input type="email" name="email" class="feedback-input-element" placeholder="john@example.com" required>
+            <label class="feedback-form-label">Your Message</label>
+            <textarea name="message" class="feedback-input-element" rows="3" placeholder="Write your core feedback details here..." required></textarea>
+            <button type="submit" class="feedback-submit-action-btn" id="feedbackFormSubmitBtn">Submit</button>
+          </form>
+          <div class="feedback-status-msg" id="feedbackCoreStatusMsg"></div>
+        </div>
+      </div>`;
+    if(key === 'developer') return `
+      <div class="touch-card" id="mainDeveloperCardTarget">
+        <img src="${t.img}" class="touch-img" alt="${t.title}">
+        <div class="touch-content">
+          <h3 style="color:var(--accent);font-weight:800;"><i class="fas fa-code"></i> ${t.title}</h3>
+          <p>${t.desc}</p>
+          <a href="${AppState.settings.links.devContact||'#'}" target="_blank" class="dev-contact-whatsapp-btn"><i class="fab fa-whatsapp"></i> ${t.btn||'Contact'}</a>
+        </div>
+      </div>`;
+    if(key === 'support') return `
+      <div class="touch-card" id="mainSupportCardTarget">
+        <img src="${t.img}" class="touch-img" alt="${t.title}">
+        <div class="touch-content"><h3>${t.title}</h3><p>${t.desc}</p>
+          <button class="support-join-trigger-btn" id="supportJoinTriggerBtn"><i class="fas fa-users"></i> ${t.btn||'Join Now'}</button>
+          <div class="support-dropdown-links-container" id="supportDropdownLinksWrap">
+            <a href="${AppState.settings.links.waCommunity||'#'}" target="_blank" class="support-sublink-item"><i class="fas fa-users-cog"></i> <span>WhatsApp Community</span></a>
+            <a href="${AppState.settings.links.waChannel||'#'}" target="_blank" class="support-sublink-item"><i class="fab fa-whatsapp"></i> <span>WhatsApp Channel</span></a>
+            <a href="${AppState.settings.links.tgChannel||'#'}" target="_blank" class="support-sublink-item"><i class="fab fa-telegram-plane"></i> <span>Telegram Channel</span></a>
+          </div>
+        </div>
+      </div>`;
+    if(key === 'tutorials') return `
+      <div class="touch-card" id="mainTutorialCard">
+        <img src="${t.img}" class="touch-img" alt="${t.title}">
+        <div class="touch-content"><h3>${t.title}</h3><p>${t.desc}</p>
+          <button class="support-join-trigger-btn" onclick="openTutorialsModal()"><i class="fas fa-play-circle"></i> ${t.btn||'Watch Now'}</button>
+        </div>
+      </div>`;
+    if(key === 'updates') return `
+      <div class="touch-card" id="mainUpdatesCardTarget">
+        <img src="${t.img}" class="touch-img" alt="${t.title}">
+        <div class="touch-content">
+          <div class="updates-header-row"><h3 style="color:var(--accent);margin-bottom:0;"><i class="fas fa-bell"></i> ${t.title}</h3></div>
+          <div class="logs-scroll-area">${AppState.updates.map(log=>`<div class="log-item-row"><span class="log-time"><i class="far fa-clock"></i> ${log.time}</span><div>${log.text}</div></div>`).join('')}</div>
+          <div class="updates-bottom-row"><button class="mark-read-btn" onclick="triggerMarkAllAsRead(event)">Mark as read</button></div>
+        </div>
+      </div>`;
+    if(key === 'deploy' || key === 'deployeracc' || key === 'manage') {
+      const actionFn = { deploy: 'openDeployModal(false)', deployeracc: 'openDeployerAccount()', manage: 'openManageBotModal()' }[key];
+      return `
+      <div class="touch-card">
+        <img src="${t.img}" class="touch-img" alt="${t.title}">
+        <div class="touch-content"><h3>${t.title}</h3><p>${t.desc}</p>
+          <button class="generic-touch-card-btn" onclick="${actionFn}">${t.btn}</button>
+        </div>
+      </div>`;
+    }
+    if(t.actionType === 'external') return `
+      <div class="touch-card" onclick="window.open('${t.url}','_blank')">
+        <img src="${t.img}" class="touch-img" alt="${t.title}">
+        <div class="touch-content"><h3>${t.title}</h3><p>${t.desc}</p>${t.btn?`<button class="generic-touch-card-btn">${t.btn}</button>`:''}</div>
+      </div>`;
+    return `<div class="touch-card"><img src="${t.img}" class="touch-img" alt="${t.title}"><div class="touch-content"><h3>${t.title}</h3><p>${t.desc}</p></div></div>`;
+  }).join('');
+  setupFeedbackInteractionEvents();
+  setupSupportDropdownEvents();
+  setupMenuUpdatesNavigationEvent();
+  observeElements();
+}
+function renderFeedback() {
+  document.getElementById('feedbackGrid').innerHTML = AppState.feedback.map(f=>`
+    <div class="feedback-card"><i class="fas fa-quote-left"></i><div class="feedback-text">"${f.text}"</div><div class="feedback-author">— ${f.author}</div></div>`).join('');
+}
+function renderSocialLinks() {
+  const icons = { twitter:'fab fa-twitter', whatsapp:'fab fa-whatsapp', youtube:'fab fa-youtube', facebook:'fab fa-facebook-f', instagram:'fab fa-instagram', telegram:'fab fa-telegram-plane', tiktok:'fab fa-tiktok' };
+  document.getElementById('socialLinksRow').innerHTML = (AppState.settings.social||[]).map(s=>`<a href="${s.url}" target="_blank"><i class="${s.icon||icons[s.key]||'fas fa-link'}"></i></a>`).join('');
+}
+function renderSidebarDynamicLinks() {
+  const links = AppState.settings.links || {};
+  const wa = document.getElementById('menuWaChannelLink'); if(wa) wa.href = links.waChannel || '#';
+  const tg = document.getElementById('menuTgChannelLink'); if(tg) tg.href = links.tgChannel || '#';
+  const tutList = document.getElementById('tutorialSidebarList');
+  if(tutList) tutList.innerHTML = AppState.tutorials.map(t=>`<li><a href="#" class="tutorial-menu-link" data-vid="${t.tutorialId}"><i class="${t.icon}"></i> ${t.title}</a></li>`).join('');
+  document.querySelectorAll('.tutorial-menu-link').forEach(link=>{
+    link.addEventListener('click',(e)=>{ e.preventDefault(); const vid=link.getAttribute('data-vid'); const t=AppState.tutorials.find(t=>t.tutorialId===vid); if(t){ closeSidebarFn(); setTimeout(()=>{ playVideo(t.tutorialId,t.title); },400); } });
+  });
+}
+function renderTutorials() {
+  document.getElementById('tutorialList').innerHTML = AppState.tutorials.map(t=>`
+    <div class="tutorial-item" onclick="playVideo('${t.tutorialId}','${t.title.replace(/'/g,"\\'")}')">
+      <i class="${t.icon}"></i>
+      <div class="tutorial-item-text"><h4>${t.title}</h4><p>${t.desc}</p></div>
+      <i class="fas fa-play-circle" style="margin-left:auto;color:var(--accent);"></i>
+    </div>`).join('');
+}
+
+// Reusable renderer for "Available Bots" cards in Deploy Bot flows.
+function buildAvailableBotCardHTML(b, index, isDeployerCtx, opts) {
+  opts = opts || {};
+  const deployLabel = opts.deployLabel || 'Deploy';
+  const isUpdateFlag = opts.isUpdate ? 'true' : 'false';
+  const authorLine = `<span>By <strong style="color:var(--text-secondary);font-weight:700;">${b.author || 'Adevos-X Team'}</strong></span><span>Added on ${b.addedDate || 'N/A'}</span>`;
+  return `
+    <div class="bot-card-item-v2">
+      <img src="${b.img}" class="bot-card-img-v2" alt="${b.name}">
+      <div class="bot-card-actions-row">
+        <button class="bot-action-btn" onclick="openDeployPageForBot('${b._id}', ${!!isDeployerCtx}, ${isUpdateFlag})">${deployLabel}</button>
+        <button class="bot-action-btn secondary" onclick="window.open('${b.github}','_blank')">Source Code</button>
+      </div>
+      <div class="bot-card-body-v2">
+        <div class="bot-card-name-v2">${b.name}</div>
+        ${opts.note ? `<div style="font-size:0.62rem;color:var(--accent);margin:0.2rem 0 0.4rem;">${opts.note}</div>` : ''}
+        <div class="bot-card-desc-v2">${b.desc}</div>
+        <div class="bot-card-meta-v2">${authorLine}</div>
+      </div>
+    </div>`;
+}
+function renderBotCards() {
+  const grid = document.getElementById('botCardsGrid');
+  grid.style.gridTemplateColumns = '';
+  grid.innerHTML = AppState.bots.map((b)=>buildAvailableBotCardHTML(b, b._id, true)).join('');
+}
+
+/* ===================== SLIDER ===================== */
+function updateSliderPosition() { const t=document.getElementById('sliderTrack'); if(t) t.style.transform = `translateX(-${slideIndex * 100}%)`; }
+function nextSlide() { if(!AppState.slides.length) return; slideIndex = (slideIndex + 1) % AppState.slides.length; updateSliderPosition(); }
+
+/* ===================== INTERSECTION OBSERVER ===================== */
+const observer = new IntersectionObserver((entries)=>{ entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); }); },{ threshold:0.05 });
+function observeElements() { document.querySelectorAll('.service-card,.touch-card,.feedback-card').forEach(el=>observer.observe(el)); }
+
+/* ===================== TOAST / NOTIFICATIONS (driven by admin settings) ===================== */
+function createLiveToastNotification(message) {
+  if(hasUserReadUpdates || toastTimeLimitExceeded) return;
+  const container = document.getElementById('toastContainer');
+  if(!container) return;
+  container.innerHTML = '';
+  const toast = document.createElement('div');
+  toast.className = 'toast-box';
+  toast.innerHTML = `<i class="fas fa-info-circle"></i> <span>${message}</span>`;
+  toast.onclick = () => navigateToUpdatesCardDirectly();
+  container.appendChild(toast);
+  const notif = AppState.settings.notifications || {};
+  setTimeout(()=>{ toast.remove(); }, (notif.durationSeconds||4)*1000);
+}
+let logPointer = 0;
+function startToastSystemFromSettings() {
+  const notif = AppState.settings.notifications || {};
+  if(notif.enabled === false) return;
+  if(!AppState.updates.length) return;
+  const intervalMs = (notif.intervalSeconds || 6.5) * 1000;
+  setTimeout(()=>{ createLiveToastNotification(AppState.updates[0].text); logPointer=1; }, 1500);
+  const toastInterval = setInterval(()=>{
+    if(hasUserReadUpdates || toastTimeLimitExceeded){ clearInterval(toastInterval); return; }
+    if(AppState.updates.length > 0){ createLiveToastNotification(AppState.updates[logPointer % AppState.updates.length].text); logPointer++; }
+  }, intervalMs);
+  const stopAfterMin = notif.stopAfterMinutes || 0;
+  if(stopAfterMin > 0) {
+    setTimeout(()=>{ toastTimeLimitExceeded = true; const c = document.getElementById('toastContainer'); if(c) c.innerHTML=''; }, stopAfterMin*60000);
+  }
+}
+function navigateToUpdatesCardDirectly() {
+  const c = document.getElementById('mainUpdatesCardTarget');
+  if(c){ c.scrollIntoView({behavior:'smooth',block:'center'}); c.classList.add('highlight-dev-border'); setTimeout(()=>c.classList.remove('highlight-dev-border'),2500); }
+}
+window.triggerMarkAllAsRead = function(event) {
+  if(event) event.stopPropagation();
+  hasUserReadUpdates = true;
+  const badge = document.getElementById('menuNotifBadge');
+  if(badge) badge.style.display = 'none';
+  const c = document.getElementById('toastContainer');
+  if(c) c.innerHTML = '';
+  showNotif('All updates marked as read!');
+};
+function setupMenuUpdatesNavigationEvent() {
+  const link = document.getElementById('menuUpdatesLink');
+  if(link){ link.replaceWith(link.cloneNode(true)); }
+  const freshLink = document.getElementById('menuUpdatesLink');
+  if(freshLink){ freshLink.addEventListener('click',(e)=>{ e.preventDefault(); closeSidebarFn(); setTimeout(()=>navigateToUpdatesCardDirectly(),400); }); }
+}
+
+/* ===================== SEARCH BAR ===================== */
+function setupActiveSearchBarSuggestions() {
+  const searchInput = document.getElementById('menuSearchInput');
+  const suggestionsDropdown = document.getElementById('searchSuggestionsDropdown');
+  const searchableTargets = [
+    {keywords:['home','dashboard','main'],label:'Home / Dashboard',targetId:'top',icon:'fas fa-home'},
+    {keywords:['updates','news','latest','logs'],label:'Latest News & Updates',targetId:'mainUpdatesCardTarget',icon:'fas fa-bell',action:'updates'},
+    {keywords:['deploy bot','whatsapp bot','telegram bot','robot'],label:'Deploy WhatsApp/Telegram Bot',targetId:'getInTouchGrid',icon:'fas fa-robot'},
+    {keywords:['account','profile','free plan','deployer account'],label:'My Account Settings',targetId:'sidebar',icon:'fas fa-user-circle',action:'openProfile'},
+    {keywords:['tutorials','watch','videos','how to'],label:'Watch Video Tutorials',targetId:'getInTouchGrid',icon:'fas fa-graduation-cap'},
+    {keywords:['feedback','send feedback','form','message'],label:'Send Your Feedback',targetId:'mainFeedbackTargetCard',icon:'fas fa-comment-alt',action:'openFeedback'},
+    {keywords:['support','community','whatsapp channel','telegram channel'],label:'Get Support & Channels',targetId:'mainSupportCardTarget',icon:'fas fa-headset',action:'openSupport'},
+    {keywords:['developer','ahmed','meet developer','engineer'],label:'Meet Ahmed (Developer)',targetId:'mainDeveloperCardTarget',icon:'fas fa-code'}
+  ];
+  searchInput.addEventListener('input', function() {
+    const query = searchInput.value.toLowerCase().trim();
+    suggestionsDropdown.innerHTML = '';
+    if(!query){ suggestionsDropdown.style.display='none'; return; }
+    const filtered = searchableTargets.filter(item=>item.keywords.some(k=>k.includes(query))||item.label.toLowerCase().includes(query));
+    if(filtered.length > 0) {
+      filtered.forEach(match => {
+        const div = document.createElement('div');
+        div.className='suggestion-item';
+        div.innerHTML=`<i class="${match.icon}"></i><span>${match.label}</span>`;
+        div.addEventListener('click',()=>{
+          closeSidebarFn(); suggestionsDropdown.style.display='none'; searchInput.value='';
+          setTimeout(()=>{
+            if(match.action==='openProfile'){ document.getElementById('profilePopup').classList.add('show'); window.scrollTo({top:0,behavior:'smooth'}); }
+            else if(match.action==='openFeedback'){ const f=document.getElementById('inlineFeedbackFormWrap'); const b=document.getElementById('inlineFormTriggerBtn'); if(f&&b){ f.classList.add('active'); b.style.display='none'; } const c=document.getElementById(match.targetId); if(c) c.scrollIntoView({behavior:'smooth',block:'center'}); }
+            else if(match.action==='openSupport'){ const d=document.getElementById('supportDropdownLinksWrap'); if(d) d.classList.add('active'); const c=document.getElementById(match.targetId); if(c) c.scrollIntoView({behavior:'smooth',block:'center'}); }
+            else { const el=document.getElementById(match.targetId); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); if(match.targetId!=='top'){ el.classList.add('highlight-dev-border'); setTimeout(()=>el.classList.remove('highlight-dev-border'),2500); } } }
+          }, 400);
+        });
+        suggestionsDropdown.appendChild(div);
+      });
+      suggestionsDropdown.style.display='block';
+    } else {
+      const d=document.createElement('div'); d.className='suggestion-item'; d.style.cursor='default';
+      d.innerHTML=`<i class="fas fa-exclamation-circle"></i><span>No suggestions found</span>`;
+      suggestionsDropdown.appendChild(d); suggestionsDropdown.style.display='block';
+    }
+  });
+  document.addEventListener('click',e=>{ if(!searchInput.contains(e.target)&&!suggestionsDropdown.contains(e.target)) suggestionsDropdown.style.display='none'; });
+}
+
+/* ===================== SUPPORT DROPDOWN ===================== */
+function setupSupportDropdownEvents() {
+  const joinBtn = document.getElementById('supportJoinTriggerBtn');
+  const dropdownWrap = document.getElementById('supportDropdownLinksWrap');
+  const supportCard = document.getElementById('mainSupportCardTarget');
+  const menuSupportTrigger = document.getElementById('menuGetSupportTrigger');
+  if(joinBtn&&dropdownWrap) joinBtn.addEventListener('click',(e)=>{ e.stopPropagation(); dropdownWrap.classList.toggle('active'); });
+  document.addEventListener('click',(e)=>{ if(supportCard&&!supportCard.contains(e.target)) if(dropdownWrap) dropdownWrap.classList.remove('active'); });
+  if(menuSupportTrigger){ menuSupportTrigger.replaceWith(menuSupportTrigger.cloneNode(true)); }
+  const freshTrigger = document.getElementById('menuGetSupportTrigger');
+  if(freshTrigger){ freshTrigger.addEventListener('click',(e)=>{ e.preventDefault(); closeSidebarFn(); setTimeout(()=>{ if(supportCard){ supportCard.scrollIntoView({behavior:'smooth',block:'center'}); if(dropdownWrap) dropdownWrap.classList.add('active'); supportCard.classList.add('highlight-dev-border'); setTimeout(()=>supportCard.classList.remove('highlight-dev-border'),2500); } },400); }); }
+}
+
+/* ===================== FEEDBACK FORM ===================== */
+function setupFeedbackInteractionEvents() {
+  const triggerBtn = document.getElementById('inlineFormTriggerBtn');
+  const formWrap = document.getElementById('inlineFeedbackFormWrap');
+  const actualForm = document.getElementById('ajaxFeedbackCoreForm');
+  const menuFeedbackLink = document.getElementById('menuFeedbackLink');
+  const menuMeetDeveloperLink = document.getElementById('menuMeetDeveloperLink');
+  const feedbackCard = document.getElementById('mainFeedbackTargetCard');
+  const developerCard = document.getElementById('mainDeveloperCardTarget');
+  if(!triggerBtn||!formWrap) return;
+  function openFormSection(){ formWrap.classList.add('active'); triggerBtn.style.display='none'; setTimeout(()=>formWrap.scrollIntoView({behavior:'smooth',block:'center'}),150); }
+  function closeFormSection(){ if(formWrap.classList.contains('active')){ formWrap.classList.remove('active'); triggerBtn.style.display='inline-block'; } }
+  triggerBtn.addEventListener('click',(e)=>{ e.stopPropagation(); openFormSection(); });
+  document.addEventListener('click',(e)=>{ if(feedbackCard&&!feedbackCard.contains(e.target)) closeFormSection(); });
+  if(menuFeedbackLink) menuFeedbackLink.addEventListener('click',(e)=>{ closeSidebarFn(); setTimeout(()=>openFormSection(),400); });
+  if(menuMeetDeveloperLink) menuMeetDeveloperLink.addEventListener('click',(e)=>{ e.preventDefault(); closeSidebarFn(); setTimeout(()=>{ if(developerCard){ developerCard.scrollIntoView({behavior:'smooth',block:'center'}); developerCard.classList.add('highlight-dev-border'); setTimeout(()=>developerCard.classList.remove('highlight-dev-border'),2500); } },400); });
+  if(actualForm) actualForm.addEventListener('submit',function(e){ e.preventDefault(); const btn=document.getElementById('feedbackFormSubmitBtn'); const msg=document.getElementById('feedbackCoreStatusMsg'); btn.innerText="SENDING LOGS..."; btn.disabled=true; fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(actualForm)))}).then(async(r)=>{ if(r.status===200){ msg.innerHTML="<span style='color:#00e676;'>Success! Feedback submitted safely.</span>"; actualForm.reset(); setTimeout(()=>closeFormSection(),3000); } else { msg.innerHTML="<span style='color:#ff5555;'>Submission runtime exception. Try again!</span>"; } }).catch(()=>{ msg.innerHTML="<span style='color:#ff5555;'>Network connection failure detected.</span>"; }).then(()=>{ btn.innerText="SUBMIT FEEDBACK"; btn.disabled=false; }); });
+}
+
+/* ===================== MODAL SYSTEM ===================== */
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+function requireLogin() {
+  if(!AppState.currentUser){ showNotif('Please sign in first.','error'); showLoginOverlay(); return false; }
+  return true;
+}
+
+/* ===================== DEPLOY BOT MODAL ===================== */
+function renderPaymentButtons() {
+  const row = document.getElementById('paymentButtonsRow');
+  const buttons = (AppState.paymentMethods||[]).filter(m=>m.isActive).map(m=>{
+    if(m.type==='online') return `<button class="pay-btn" onclick="selectPayment('paystack',this)"><i class="fas fa-credit-card"></i> ${m.name}</button>`;
+    if(m.type==='coins') return `<button class="pay-btn" onclick="selectPayment('coins',this)"><i class="fas fa-coins"></i> ${m.name}</button>`;
+    return '';
+  }).join('');
+  const hasManual = (AppState.paymentMethods||[]).some(m=>m.isActive && m.type==='manual');
+  const manualBtn = hasManual ? `<button class="pay-btn" onclick="selectPayment('manually',this)"><i class="fas fa-hand-holding-usd"></i> Manually</button>` : '';
+  const freeBotUrl = AppState.settings.links.freeBot || '#';
+  row.innerHTML = buttons + manualBtn + `<button class="pay-btn" onclick="window.open('${freeBotUrl}','_blank')"><i class="fas fa-gift"></i> Get Free Bot</button>`;
+
+  document.getElementById('manualNumbersList').innerHTML = (AppState.paymentMethods||[])
+    .filter(m=>m.isActive && m.type==='manual')
+    .map(m=>`<div class="manual-number-row"><i class="fab fa-whatsapp" style="color:#25d366;font-size:1rem;"></i><div><span>${m.instructions}</span><br><small>${m.name}</small></div></div>`).join('');
+}
+
+function openDeployModal(forDeployer) {
+  if(!requireLogin()) return;
+  isDeployerMode = !!forDeployer;
+  paymentConfirmed = false;
+  selectedPaymentMethod = '';
+  pendingTransactionId = null;
+  updateCoinsDisplay();
+  document.querySelectorAll('.pay-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.payment-panel').forEach(p=>p.classList.remove('active'));
+  const paystackConfirmWrap = document.getElementById('paystackConfirmWrap');
+  if(paystackConfirmWrap) paystackConfirmWrap.style.display = 'none';
+  renderPaymentButtons();
+
+  const pricing = AppState.settings.pricing || {};
+  document.getElementById('paystackAmountLabel').textContent = `$${pricing.deployPrice||5} USD / Month`;
+  document.getElementById('paystackPayBtnLabel').textContent = `Proceed to Pay — $${(pricing.deployPrice||5).toFixed ? pricing.deployPrice.toFixed(2) : pricing.deployPrice}`;
+  document.getElementById('coinsCostLabel').textContent = `${pricing.coinsPerDeploy||50} AV Coins`;
+  document.getElementById('coinsRequiredLabel').textContent = `${pricing.coinsPerDeploy||50} AV Coins`;
+
+  const grid = document.getElementById('botCardsGrid');
+  const desc = document.getElementById('deployModalDesc');
+  if(isDeployerMode) {
+    grid.style.gridTemplateColumns = '';
+    desc.textContent = 'As a Deployer, choose any bot, select a payment method, and deploy for any number. Multiple deployments allowed within your subscription period.';
+    grid.innerHTML = AppState.bots.map((b) => buildAvailableBotCardHTML(b, b._id, true)).join('');
+  } else {
+    grid.style.gridTemplateColumns = '1fr';
+    desc.textContent = 'As a User Account member, you can deploy one bot (ADEVOS-X BOT) to one number. To deploy multiple bots, upgrade to a Deployer Account.';
+    const b = AppState.featuredBot;
+    if(!b){ grid.innerHTML = '<p style="color:var(--text-secondary);font-size:0.75rem;text-align:center;">No featured bot configured yet.</p>'; openModal('deployBotModal'); return; }
+    const cardHTML = buildAvailableBotCardHTML(b, b._id, false, { deployLabel: 'Deploy' });
+    grid.innerHTML = cardHTML + `
+      <div style="font-size:0.7rem;color:var(--text-secondary);margin-top:0.8rem;padding:0.6rem;background:rgba(0,230,118,0.04);border-radius:0.5rem;border:1px dashed var(--border);text-align:center;">
+        <i class="fas fa-info-circle" style="color:var(--accent);"></i> User Account = 1 bot, 1 number.
+        <span style="color:var(--accent);cursor:pointer;font-weight:700;" onclick="closeModal('deployBotModal');openDeployerAccountModal();">Get Deployer Account for unlimited →</span>
+      </div>`;
+  }
+  openModal('deployBotModal');
+}
+function selectPayment(type, btnEl) {
+  document.querySelectorAll('.pay-btn').forEach(b=>b.classList.remove('active'));
+  if(btnEl) btnEl.classList.add('active');
+  selectedPaymentMethod = type;
+  document.querySelectorAll('.payment-panel').forEach(p=>p.classList.remove('active'));
+  const panels = {paystack:'paystackPanel',manually:'manualPanel',coins:'coinsPanel'};
+  if(panels[type]) document.getElementById(panels[type]).classList.add('active');
+  document.getElementById('deployCoinsBalance').innerText = AppState.currentUser?.coins ?? 0;
+}
+async function initiatePaystackPayment() {
+  try {
+    showNotif('Redirecting to Paystack secure checkout...');
+    const res = await apiPost('/public/paystack/initialize', { userId: AppState.currentUser._id, type: 'deployment' });
+    pendingTransactionId = res.reference;
+    window.open(res.authorizationUrl, '_blank');
+    document.getElementById('paystackConfirmWrap').style.display = 'block';
+  } catch(e) { showNotif(e.message,'error'); }
+}
+function confirmPaystackPayment() {
+  // NOTE: real confirmation happens via Paystack webhook server-side once payment
+  // actually completes. This click just unlocks the deploy step for this demo,
+  // since we can't finish a real payment inside this sandbox.
+  paymentConfirmed = true;
+  showNotif('Payment marked as confirmed. You can now deploy your bot.');
+}
+async function confirmManualPayment() {
+  try {
+    await apiPost('/public/payments/manual', { userId: AppState.currentUser._id, type: 'deployment', note: 'Submitted via public site' });
+    paymentConfirmed = true;
+    showNotif('Payment submitted for admin verification. You can proceed — deployment will be reviewed.');
+  } catch(e) { showNotif(e.message,'error'); }
+}
+function payWithCoins() {
+  const cost = AppState.settings.pricing?.coinsPerDeploy || 50;
+  if((AppState.currentUser?.coins||0) < cost){ showNotif('Insufficient AV Coins!','error'); return; }
+  selectedPaymentMethod = 'coins';
+  paymentConfirmed = true;
+  showNotif('AV Coins selected. Coins will be deducted when you deploy.');
+  closeModal('deployBotModal');
+  const target = isDeployerMode ? AppState.bots[0]?._id : AppState.featuredBot?._id;
+  if(target) setTimeout(()=>openDeployPageForBot(target, isDeployerMode, false), 300);
+}
+function updateCoinsDisplay() {
+  const bal = AppState.currentUser?.coins ?? 0;
+  const el = document.getElementById('deployCoinsBalance'); if(el) el.innerText = bal;
+  const pg = document.getElementById('coinsPageBalance'); if(pg) pg.innerText = bal;
+}
+
+/* ===================== DEPLOY PAGE ===================== */
+function renderPlatformButtons() {
+  const row = document.getElementById('platformSelectRow');
+  row.innerHTML = (AppState.platforms||[]).map(p=>`<button class="platform-btn" onclick="selectPlatform(this,'${p.slug}')"><i class="${p.icon||'fas fa-server'}"></i> Deploy on ${p.name}</button>`).join('') || '<p style="color:var(--text-secondary);font-size:0.72rem;">No deployment platforms are active right now.</p>';
+}
+function openDeployPageForBot(botId, isDeployer, isUpdate) {
+  if(!isUpdate && !paymentConfirmed) {
+    showNotif('Please complete payment first (Paystack, Manual, or Coins) before deploying.','error');
+    const paymentRow = document.querySelector('.payment-buttons-row');
+    if(paymentRow) paymentRow.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  currentDeployBotIndex = botId;
+  isDeployerMode = !!isDeployer;
+  closeModal('deployBotModal');
+  closeModal('deployerAccountModal');
+  renderPlatformButtons();
+  document.getElementById('deployPage').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  setupMusicPlayer();
+}
+function closeDeployPage() {
+  document.getElementById('deployPage').classList.remove('active');
+  document.body.style.overflow = '';
+  stopMusic();
+  document.getElementById('deployLogsCard').classList.remove('active');
+  document.getElementById('deployLogsTerminal').innerHTML = '';
+  document.querySelectorAll('.platform-btn').forEach(b=>b.classList.remove('selected'));
+  selectedPlatform = '';
+}
+function selectPlatform(btn, name) {
+  document.querySelectorAll('.platform-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedPlatform = name;
+}
+function openPairShare() {
+  const link = AppState.settings.links.pairFallback || 'https://adevosx.site/pair';
+  if(navigator.share){ navigator.share({title:'Pair Bot',url:link}); } else { copyToClipboard(link); showNotif('Pair link copied!'); }
+}
+function openPairFront() { window.open(AppState.settings.links.pairFallback || 'https://adevosx.site/pair','_blank'); }
+
+async function startDeployment() {
+  const ownerName = document.getElementById('ownerNameInput').value.trim();
+  const ownerNum = document.getElementById('ownerNumberInput').value.trim();
+  const sessionId = document.getElementById('sessionIdInput').value.trim();
+  if(!ownerName){ showNotif('Please enter Owner Name.','error'); return; }
+  if(!ownerNum){ showNotif('Please enter Owner Number.','error'); return; }
+  if(!selectedPlatform){ showNotif('Please select a deployment platform.','error'); return; }
+  if(!sessionId){ showNotif('Please paste your Session ID.','error'); return; }
+  const logsCard = document.getElementById('deployLogsCard');
+  const terminal = document.getElementById('deployLogsTerminal');
+  logsCard.classList.add('active');
+  terminal.innerHTML = '';
+  const logLines = [
+    '> Initializing deployment environment...',
+    '> Connecting to ' + selectedPlatform.toUpperCase() + ' servers...',
+    '> Validating Session ID...',
+    '> Uploading bot configuration...',
+    '> Setting owner: ' + ownerName + ' (' + ownerNum + ')...',
+  ];
+  let i = 0;
+  const logInterval = setInterval(async ()=>{
+    if(i >= logLines.length){
+      clearInterval(logInterval);
+      appendLogLine(terminal, '> Talking to backend & deployment platform...');
+      try {
+        const botId = isDeployerMode ? currentDeployBotIndex : AppState.featuredBot._id;
+        const payload = { userId: AppState.currentUser._id, botId, ownerName, ownerNum, sessionId, platform: selectedPlatform };
+        const path = selectedPaymentMethod === 'coins' ? '/public/deploy/with-coins' : '/public/deploy';
+        const result = await apiPost(path, payload);
+        appendLogLine(terminal, '> Bot is online! ✓');
+        if(result.remainingCoins !== undefined && AppState.currentUser) AppState.currentUser.coins = result.remainingCoins;
+        showDeploySuccess(ownerName, ownerNum, selectedPlatform, result.deployment || result);
+      } catch(e) {
+        appendLogLine(terminal, `> ERROR: ${e.message}`);
+        showNotif(e.message,'error');
+      }
+      return;
+    }
+    appendLogLine(terminal, logLines[i]);
+    i++;
+  }, 700);
+}
+function appendLogLine(terminal, text) {
+  const line = document.createElement('div');
+  line.className = 'log-line';
+  line.innerHTML = `<span style="color:#9bbf8f;">[${new Date().toLocaleTimeString()}]</span> ${text}`;
+  terminal.appendChild(line);
+  terminal.scrollTop = terminal.scrollHeight;
+}
+
+function showDeploySuccess(name, num, platform, deployment) {
+  const botName = deployment?.bot?.name || (isDeployerMode ? (AppState.bots.find(b=>b._id===currentDeployBotIndex)?.name) : AppState.featuredBot?.name) || 'Bot';
+  const msgDiv = document.createElement('div');
+  msgDiv.style.cssText = 'background:rgba(0,230,118,0.1);border:1px solid var(--accent);border-radius:0.6rem;padding:1rem;margin-top:0.8rem;';
+  msgDiv.innerHTML = `
+    <div style="color:var(--accent);font-weight:800;font-family:'Orbitron',sans-serif;font-size:0.9rem;margin-bottom:0.6rem;"><i class="fas fa-check-circle"></i> Bot Deployed Successfully!</div>
+    <div style="font-size:0.72rem;color:var(--text-secondary);line-height:1.8;">
+      <div><strong style="color:var(--text-primary);">Bot Name:</strong> ${botName}</div>
+      <div><strong style="color:var(--text-primary);">Platform:</strong> ${platform.toUpperCase()}</div>
+      <div><strong style="color:var(--text-primary);">Owner Name:</strong> ${name}</div>
+      <div><strong style="color:var(--text-primary);">Owner Number:</strong> ${num}</div>
+      <div style="margin-top:0.5rem;color:var(--text-secondary);">You can now manage your bot from the "Manage Your Bot" section.</div>
+    </div>
+    <button class="deploy-action-btn" style="margin-top:0.7rem;width:100%;font-size:0.75rem;" onclick="isDeployerMode?openManageBotPageDirect():openUserAccountPage()"><i class="fas fa-tasks"></i> Start Manage</button>`;
+  document.getElementById('deployLogsCard').appendChild(msgDiv);
+  msgDiv.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+/* ===================== MANAGE BOT (reads real deployments from backend) ===================== */
+function generateDemoLogs(botName) {
+  const t = new Date().toLocaleTimeString();
+  return [
+    `<span style="color:#9bbf8f">[${t}]</span> <span style="color:#00e676">[INFO] ${botName} process started</span>`,
+    `<span style="color:#9bbf8f">[${t}]</span> <span style="color:#00e676">[OK] Connected to WhatsApp successfully</span>`,
+    `<span style="color:#9bbf8f">[${t}]</span> <span style="color:#b9f6ca">[INFO] Listening for messages...</span>`,
+  ].join('<br>');
+}
+function toggleBotLogs(btn) {
+  const consoleEl = btn.parentElement.nextElementSibling;
+  if(consoleEl) {
+    consoleEl.classList.toggle('open');
+    btn.innerHTML = consoleEl.classList.contains('open') ? '<i class="fas fa-terminal"></i> Hide Logs' : '<i class="fas fa-terminal"></i> View Logs';
+  }
+}
+function buildBotManageCardHTML(d) {
+  const isOnline = d.status === 'online';
+  const botName = d.bot?.name || 'Bot';
+  const type = d.source === 'Deployer' ? 'deployer' : 'user';
+  return `
+    <div class="bot-manage-card">
+      <h4><i class="fas fa-robot"></i> ${botName} <span style="font-size:0.62rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;">[${d.source}]</span></h4>
+      <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:0.8rem;">
+        <div style="display:flex;align-items:center;gap:0.35rem;background:${isOnline ? 'rgba(0,230,118,0.08)' : 'rgba(255,85,85,0.08)'};border:1px solid ${isOnline ? 'rgba(0,230,118,0.25)' : 'rgba(255,85,85,0.25)'};border-radius:2rem;padding:0.25rem 0.65rem;font-size:0.65rem;font-weight:700;color:${isOnline ? 'var(--accent)' : '#ff5555'};font-family:'JetBrains Mono',monospace;">
+          <div style="width:6px;height:6px;border-radius:50%;background:${isOnline ? 'var(--accent)' : '#ff5555'};${isOnline ? 'animation:statusPulse 2s infinite;' : ''}"></div>
+          ${d.status.toUpperCase()}
+        </div>
+        ${d.expiresAt ? `<div style="display:flex;align-items:center;gap:0.35rem;background:rgba(0,0,0,0.1);border:1px solid var(--border);border-radius:2rem;padding:0.25rem 0.65rem;font-size:0.65rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;"><i class="fas fa-calendar" style="font-size:0.6rem;"></i> Expires ${new Date(d.expiresAt).toLocaleDateString()}</div>` : ''}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0.4rem;margin-bottom:0.9rem;font-size:0.74rem;line-height:1.6;">
+        <div><strong style="color:var(--text-primary);">Owner Name:</strong><br><span style="color:var(--text-secondary);">${d.ownerName}</span></div>
+        <div><strong style="color:var(--text-primary);">Owner Number:</strong><br><span style="color:var(--text-secondary);">${d.ownerNum}</span></div>
+        <div><strong style="color:var(--text-primary);">Deployed Platform:</strong><br><span style="color:var(--text-secondary);">${(d.platform||'').toUpperCase()}</span></div>
+      </div>
+      <div class="bot-manage-btns">
+        <button class="manage-btn" onclick="toggleBotLogs(this)"><i class="fas fa-terminal"></i> View Logs</button>
+      </div>
+      <div class="bot-logs-console" style="display:none;margin-top:0.8rem;background:#000;border:1px solid var(--border);border-radius:0.5rem;padding:0.7rem;max-height:160px;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:0.65rem;line-height:1.7;">${generateDemoLogs(botName)}</div>
+    </div>`;
+}
+async function fetchMyDeployments() {
+  if(!AppState.currentUser) return [];
+  try { return await apiGet(`/public/user/${AppState.currentUser._id}/deployments`); } catch(e) { return []; }
+}
+async function openManageBotModal() {
+  if(!requireLogin()) return;
+  const body = document.getElementById('manageBotModalBody');
+  const deployments = await fetchMyDeployments();
+  if(!deployments.length) {
+    body.innerHTML = `
+      <div style="text-align:center;padding:1.5rem;">
+        <i class="fas fa-robot" style="font-size:3rem;color:var(--border);margin-bottom:1rem;display:block;"></i>
+        <h3 style="font-size:0.95rem;margin-bottom:0.5rem;">No Active Bots Found</h3>
+        <p style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:1rem;">You don't have any deployed bots yet. Deploy a bot first to start managing it.</p>
+        <button class="deploy-action-btn" onclick="closeModal('manageBotModal');openDeployModal(false);">Deploy Now</button>
+      </div>`;
+  } else {
+    body.innerHTML = `<div style="display:flex;flex-direction:column;gap:0.8rem;">${deployments.map(buildBotManageCardHTML).join('')}</div>`;
+  }
+  openModal('manageBotModal');
+}
+async function openUserAccountPage() {
+  closeDeployPage();
+  if(!requireLogin()) return;
+  const content = document.getElementById('userAccountPageContent');
+  const deployments = (await fetchMyDeployments()).filter(d=>d.source==='User Account');
+  if(!deployments.length) {
+    content.innerHTML = `
+      <div style="text-align:center;padding:2rem;">
+        <i class="fas fa-robot" style="font-size:3rem;color:var(--border);margin-bottom:1rem;display:block;"></i>
+        <h3 style="font-size:0.95rem;margin-bottom:0.5rem;font-family:'Orbitron',sans-serif;">No Active Bot</h3>
+        <p style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:1.2rem;">You haven't deployed your bot yet.</p>
+        <button class="deploy-action-btn" onclick="closeUserAccountPage();openDeployModal(false);"><i class="fas fa-rocket"></i> Deploy Now</button>
+      </div>`;
+  } else {
+    content.innerHTML = deployments.map(buildBotManageCardHTML).join('');
+  }
+  document.getElementById('userAccountPage').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeUserAccountPage() {
+  const p = document.getElementById('userAccountPage');
+  if(p) p.classList.remove('active');
+  document.body.style.overflow = '';
+}
+async function openManageBotPageDirect() {
+  closeDeployPage();
+  const content = document.getElementById('manageBotPageContent');
+  const deployments = (await fetchMyDeployments()).filter(d=>d.source==='Deployer');
+  content.innerHTML = deployments.map(buildBotManageCardHTML).join('') || '<p style="color:var(--text-secondary);text-align:center;padding:2rem;">No bots found.</p>';
+  document.getElementById('manageBotPage').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeManagePage() { document.getElementById('manageBotPage').classList.remove('active'); document.body.style.overflow = ''; }
+
+/* ===================== AV COINS PAGE ===================== */
+async function openCoinsPage() {
+  if(!requireLogin()) return;
+  updateCoinsDisplay();
+  document.getElementById('coinsInfoReferralBonus').textContent = `${AppState.settings.pricing?.coinsPerReferral||2} AV Coins`;
+  try {
+    const { link } = await apiGet(`/public/user/${AppState.currentUser._id}/referral-link`);
+    document.getElementById('myReferralLinkDisplay').textContent = link;
+    localStorage.setItem('myReferralLink', link);
+  } catch(e) {}
+  document.getElementById('coinsPage').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeCoinsPage() { document.getElementById('coinsPage').classList.remove('active'); document.body.style.overflow = ''; }
+function scrollToGenerateLink() { const el = document.getElementById('generateLinkSection'); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); }
+async function generateReferralLink() {
+  if(!requireLogin()) return;
+  try {
+    const { link } = await apiGet(`/public/user/${AppState.currentUser._id}/referral-link`);
+    localStorage.setItem('myReferralLink', link);
+    document.getElementById('myReferralLinkDisplay').textContent = link;
+    const msg = document.getElementById('genSuccessMsg');
+    msg.style.display = 'block';
+    setTimeout(()=>msg.style.display='none', 3000);
+  } catch(e) { showNotif(e.message,'error'); }
+}
+function copyMyLink() {
+  const link = localStorage.getItem('myReferralLink');
+  if(!link){ showNotif('Generate your link first!','error'); return; }
+  copyToClipboard(link); showNotif('Link copied to clipboard!');
+}
+function shareMyLink() {
+  const link = localStorage.getItem('myReferralLink');
+  if(!link){ showNotif('Generate your link first!','error'); return; }
+  if(navigator.share){ navigator.share({title:'Join Adevos-X',url:link}); } else { copyToClipboard(link); showNotif('Link copied! Share it anywhere.'); }
+}
+
+/* ===================== DEPLOYER ACCOUNT ===================== */
+function openDeployerAccount() { openDeployerAccountModal(); }
+async function openDeployerAccountModal() {
+  if(!requireLogin()) return;
+  const body = document.getElementById('deployerAccountModalBody');
+  const deployer = AppState.settings.deployer || {};
+  const user = AppState.currentUser;
+  if(user.plan === 'Deployer') {
+    const daysLeft = user.deployerExpiry ? Math.max(0, Math.ceil((new Date(user.deployerExpiry) - Date.now())/86400000)) : 0;
+    body.innerHTML = `
+      <div class="deployer-subscription-card">
+        <div class="subscription-label">Subscription Time Remaining</div>
+        <div class="subscription-time">${daysLeft} Days</div>
+        <div class="subscription-label">Active Deployer Account</div>
+      </div>
+      <p style="font-size:0.72rem;color:var(--accent);font-weight:700;margin-bottom:0.6rem;font-family:'Orbitron',sans-serif;">Available Bots</p>
+      <div class="bot-cards-grid">${AppState.bots.map((b)=>buildAvailableBotCardHTML(b, b._id, true, { isUpdate: true })).join('')}</div>`;
+  } else {
+    body.innerHTML = `
+      <div class="deployer-info-card">
+        <h4><i class="fas fa-user-shield"></i> What is a Deployer Account?</h4>
+        <p>A Deployer Account gives you access to premium bot hosting infrastructure, priority support, multiple bot deployments, and exclusive platform features.</p>
+        <div class="deployer-price-tag">$${deployer.price||10} / Month</div>
+        <ul class="deployer-benefits">${(deployer.benefits||'').split('\n').filter(Boolean).map(b=>`<li><i class="fas fa-check"></i> ${b}</li>`).join('')}</ul>
+      </div>
+      <p style="font-size:0.72rem;color:var(--text-secondary);margin-bottom:0.5rem;text-align:center;">Choose payment method:</p>
+      <div class="deployer-pay-row">
+        <button class="deployer-pay-btn" onclick="selectDeployerPayment('paystack',this)"><i class="fas fa-credit-card"></i> Pay with Paystack</button>
+        <button class="deployer-pay-btn" onclick="selectDeployerPayment('manual',this)"><i class="fas fa-hand-holding-usd"></i> Pay Manually</button>
+      </div>
+      <div id="deployerPayPanel"></div>`;
+  }
+  openModal('deployerAccountModal');
+}
+function selectDeployerPayment(type, btn) {
+  document.querySelectorAll('.deployer-pay-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const panel = document.getElementById('deployerPayPanel');
+  const deployer = AppState.settings.deployer || {};
+  if(type==='paystack'){
+    panel.innerHTML=`<div class="payment-panel-box" style="margin-top:0.5rem;"><h4><i class="fas fa-credit-card"></i> Pay with Paystack</h4><p>Secure payment via Paystack. Amount: <strong style="color:var(--accent);">$${deployer.price||10} USD</strong></p><button class="paystack-btn-real" onclick="initiateDeployerPaystack()"><i class="fas fa-lock"></i> Proceed to Pay — $${deployer.price||10}.00</button></div>`;
+  } else {
+    const manualMethods = (AppState.paymentMethods||[]).filter(m=>m.isActive && m.type==='manual');
+    panel.innerHTML=`<div class="payment-panel-box" style="margin-top:0.5rem;"><h4><i class="fas fa-hand-holding-usd"></i> Manual Payment</h4>${manualMethods.map(m=>`<div class="manual-number-row"><i class="fab fa-whatsapp" style="color:#25d366;font-size:1rem;"></i><div><span>${m.instructions}</span><br><small>${m.name}</small></div></div>`).join('')}<button class="pay-btn" style="width:100%;justify-content:center;margin-top:0.6rem;" onclick="submitDeployerManualPayment()"><i class="fas fa-check"></i> I've Sent Payment — Verify (Demo)</button></div>`;
+  }
+}
+async function initiateDeployerPaystack() {
+  try {
+    const res = await apiPost('/public/paystack/initialize', { userId: AppState.currentUser._id, type: 'deployer_subscription' });
+    window.open(res.authorizationUrl, '_blank');
+    showNotif('Complete your payment on Paystack. Your account upgrades automatically once confirmed.');
+  } catch(e) { showNotif(e.message,'error'); }
+}
+async function submitDeployerManualPayment() {
+  try {
+    await apiPost('/public/payments/manual', { userId: AppState.currentUser._id, type: 'deployer_subscription', note: 'Deployer subscription via public site' });
+    showNotif('Payment submitted! Admin will verify and activate your Deployer Account shortly.');
+    closeModal('deployerAccountModal');
+  } catch(e) { showNotif(e.message,'error'); }
+}
+
+/* ===================== TUTORIALS ===================== */
+function openTutorialsModal() { renderTutorials(); openModal('tutorialsModal'); }
+function playVideo(id, title) {
+  closeModal('tutorialsModal');
+  const t = AppState.tutorials.find(t=>t.tutorialId===id);
+  document.getElementById('videoTitleBar').textContent = title;
+  const box = document.getElementById('videoPlaceholderBox');
+  if(t && t.video) {
+    box.innerHTML = `<video id="tutVideoPlayer" src="${t.video}" controls style="width:100%;max-height:60vh;"></video>`;
+  } else {
+    box.innerHTML = `<i class="fas fa-play-circle" style="font-size:3rem;color:var(--accent);"></i><p id="videoPlaceholderText" style="margin-top:0.8rem;">${title} — no video link configured yet.</p>`;
+  }
+  document.getElementById('videoPlayerOverlay').classList.add('active');
+}
+function toggleVideoPlay() { const v=document.getElementById('tutVideoPlayer'); if(v){ v.paused ? v.play() : v.pause(); } }
+function replayVideo() { const v=document.getElementById('tutVideoPlayer'); if(v){ v.currentTime=0; v.play(); } }
+function closeVideoPlayer() { document.getElementById('videoPlayerOverlay').classList.remove('active'); const v=document.getElementById('tutVideoPlayer'); if(v) v.pause(); }
+
+/* ===================== MUSIC PLAYER (real audio if a track URL is set) ===================== */
+function setupMusicPlayer() {
+  const tracks = (AppState.settings.music?.tracks || []).filter(t=>t.name);
+  if(!tracks.length) return;
+  currentTrack = 0;
+  document.getElementById('currentTrackName').textContent = tracks[currentTrack].name;
+  if(!audioEl) { audioEl = new Audio(); audioEl.addEventListener('timeupdate', ()=>{ if(audioEl.duration){ const bar=document.getElementById('musicProgressBar'); if(bar) bar.style.width = (audioEl.currentTime/audioEl.duration*100)+'%'; } }); }
+  audioEl.volume = (AppState.settings.music?.volume ?? 70)/100;
+  if(tracks[currentTrack].url) audioEl.src = tracks[currentTrack].url;
+  if(AppState.settings.music?.autoplay && tracks[currentTrack].url) toggleMusic();
+}
+function toggleMusic() {
+  const tracks = (AppState.settings.music?.tracks || []).filter(t=>t.name);
+  if(!tracks.length) return;
+  musicPlaying = !musicPlaying;
+  const btn = document.getElementById('playPauseBtn');
+  if(btn) btn.innerHTML = musicPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+  if(musicPlaying) {
+    btn.classList.add('playing');
+    if(audioEl && tracks[currentTrack].url) audioEl.play().catch(()=>{}); else startMusicProgress();
+  } else {
+    btn.classList.remove('playing');
+    if(audioEl) audioEl.pause(); stopMusicProgress();
+  }
+}
+function startMusicProgress() {
+  musicInterval = setInterval(()=>{ musicProgress = (musicProgress + 0.5) % 100; const bar = document.getElementById('musicProgressBar'); if(bar) bar.style.width = musicProgress + '%'; }, 200);
+}
+function stopMusicProgress() { clearInterval(musicInterval); }
+function stopMusic() { musicPlaying = false; clearInterval(musicInterval); musicProgress = 0; if(audioEl){ audioEl.pause(); audioEl.currentTime=0; } const bar = document.getElementById('musicProgressBar'); if(bar) bar.style.width='0%'; const btn=document.getElementById('playPauseBtn'); if(btn){ btn.innerHTML='<i class="fas fa-play"></i>'; btn.classList.remove('playing'); } }
+function nextTrack() { const tracks=(AppState.settings.music?.tracks||[]).filter(t=>t.name); if(!tracks.length) return; currentTrack=(currentTrack+1)%tracks.length; document.getElementById('currentTrackName').textContent=tracks[currentTrack].name; if(audioEl && tracks[currentTrack].url){ audioEl.src=tracks[currentTrack].url; if(musicPlaying) audioEl.play().catch(()=>{}); } musicProgress=0; }
+function prevTrack() { const tracks=(AppState.settings.music?.tracks||[]).filter(t=>t.name); if(!tracks.length) return; currentTrack=(currentTrack-1+tracks.length)%tracks.length; document.getElementById('currentTrackName').textContent=tracks[currentTrack].name; if(audioEl && tracks[currentTrack].url){ audioEl.src=tracks[currentTrack].url; if(musicPlaying) audioEl.play().catch(()=>{}); } musicProgress=0; }
+
+/* ===================== UTILITIES ===================== */
+function showNotif(msg, type='success') {
+  const container = document.getElementById('toastContainer');
+  if(!container) return;
+  const toast = document.createElement('div');
+  toast.className = 'toast-box';
+  const color = type==='error' ? '#ff5555' : 'var(--accent)';
+  const icon = type==='error' ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
+  toast.innerHTML = `<i class="${icon}" style="color:${color};"></i> <span>${msg}</span>`;
+  container.appendChild(toast);
+  setTimeout(()=>toast.remove(), 3500);
+}
+function copyToClipboard(text) {
+  if(navigator.clipboard){ navigator.clipboard.writeText(text); } else { const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); }
+}
+function closeSidebarFn() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('active'); }
+
+/* ===================== NAV / PROFILE / LOGIN ===================== */
+function getInitials(name){ if(!name) return 'AX'; let parts=name.trim().split(/\s+/); if(parts.length===1) return parts[0].substring(0,2).toUpperCase(); return (parts[0][0]+parts[parts.length-1][0]).toUpperCase(); }
+function updateNavProfile() {
+  const user = AppState.currentUser;
+  const av = document.getElementById('profileAvatar');
+  const small = document.getElementById('popupAvatarSmall');
+  const preview = document.getElementById('popupAvatarPreviewSmall');
+  const nameEl = document.getElementById('popupUserName');
+  const emailEl = document.getElementById('popupUserEmail');
+  const providerEl = document.getElementById('popupProviderInfo');
+  if(user) {
+    const initials = getInitials(user.name);
+    [av, small, preview].forEach(el=>{ if(!el) return; if(user.profilePicUrl){ el.style.backgroundImage=`url(${user.profilePicUrl})`; el.innerText=''; } else { el.style.backgroundImage=''; el.innerText=initials; } });
+    if(nameEl) nameEl.innerText = user.name;
+    if(emailEl) emailEl.innerText = user.email;
+    if(providerEl) providerEl.innerHTML = `<i class="fas fa-id-card"></i> ${user.provider} · ${user.plan} Account`;
+    document.getElementById('profileNameInputCompact').value = user.name;
+  }
+}
+function showLoginOverlay(){
+  if(document.getElementById('ssoOverlay')) return;
+  const overlayDiv=document.createElement('div'); overlayDiv.className='login-overlay'; overlayDiv.id='ssoOverlay';
+  overlayDiv.innerHTML=`<div class="login-card"><h2>Welcome Back</h2><p>Sign in to continue to Adevos-X Tech</p>
+    <button class="sso-btn google" onclick="loginWithGoogle()"><i class="fab fa-google"></i> Continue with Google</button>
+    <button class="sso-btn github" onclick="loginWithGithub()"><i class="fab fa-github"></i> Continue with GitHub</button>
+    <button class="sso-btn generic" onclick="loginAsGuest()"><i class="fas fa-user-plus"></i> Demo Guest Mode</button></div>`;
+  document.body.appendChild(overlayDiv);
+}
+function hideLoginOverlay(){ const el = document.getElementById('ssoOverlay'); if(el) el.remove(); }
+function loginWithGoogle(){ window.location.href = `${API_BASE}/auth/google`; }
+function loginWithGithub(){ window.location.href = `${API_BASE}/auth/github`; }
+async function loginAsGuest(){
+  try {
+    const name = 'Guest ' + Math.floor(Math.random()*10000);
+    const email = `guest${Date.now()}@adevosx.site`;
+    const res = await apiPost('/public/auth/register', { name, email });
+    localStorage.setItem('adevosToken', res.token);
+    AppState.currentUser = res.user;
+    hideLoginOverlay();
+    updateNavProfile();
+    showNotif(`Karibu, ${res.user.name}!`);
+  } catch(e) { showNotif(e.message || 'Login imeshindwa','error'); }
+}
+function logout(){ localStorage.removeItem('adevosToken'); AppState.currentUser = null; location.reload(); }
+
+/* ===================== ASSISTANT ===================== */
+function initAssistant() {
+  const assistantPopup=document.getElementById('assistantPopup'); const assistantInp=document.getElementById('assistantInput'); const assistantMsgs=document.getElementById('assistantMessages');
+  function addMsg(text,isUser=false){ let div=document.createElement('div'); div.className=`message ${isUser?'user-message':'assistant-message'}`; div.innerText=text; assistantMsgs.appendChild(div); assistantMsgs.scrollTop=assistantMsgs.scrollHeight; }
+  document.getElementById('assistantBtn').onclick=()=>{ if(assistantMsgs.children.length===0) addMsg(AppState.settings.links?.assistantGreet || "Hello, I'm Adevos assistant. How can I help you?",false); assistantPopup.classList.toggle('show'); adjustPopupForKeyboard(); };
+  document.getElementById('closeAssistant').onclick=()=>assistantPopup.classList.remove('show');
+  document.getElementById('assistantSend').onclick=()=>{ let txt=assistantInp.value.trim(); if(!txt) return; addMsg(txt,true); assistantInp.value=''; setTimeout(()=>addMsg(AppState.settings.links?.assistantReply || "Hi! Let me know if you need any technical support.",false),300); };
+  function adjustPopupForKeyboard(){ if(!assistantPopup.classList.contains('show')) return; if(window.visualViewport){ const kbH=window.innerHeight-window.visualViewport.height; if(kbH>120){ const avH=window.visualViewport.height-70; assistantPopup.style.top='10px'; assistantPopup.style.height=`${Math.min(avH,300)}px`; } else { assistantPopup.style.top='60px'; assistantPopup.style.height='380px'; } assistantMsgs.scrollTop=assistantMsgs.scrollHeight; } }
+  if(window.visualViewport) window.visualViewport.addEventListener('resize',adjustPopupForKeyboard);
+}
+
+/* ===================== INITIALIZE ===================== */
+window.addEventListener('load', async () => {
+  await bootstrapApp();
+  if(!AppState.currentUser) showLoginOverlay();
+  setupActiveSearchBarSuggestions();
+  initAssistant();
+
+  const backToTopBtn = document.getElementById('backToTopBtn');
+  window.addEventListener('scroll',()=>{ if(window.scrollY>300) backToTopBtn.classList.add('visible'); else backToTopBtn.classList.remove('visible'); });
+  backToTopBtn.onclick = ()=>{ window.scrollTo({top:0,behavior:'smooth'}); };
+
+  document.getElementById('hamburgerBtn').onclick = ()=>{ document.getElementById('sidebar').classList.add('open'); document.getElementById('overlay').classList.add('active'); };
+  document.getElementById('closeSidebar').onclick = ()=>closeSidebarFn();
+  document.getElementById('overlay').onclick = ()=>closeSidebarFn();
+
+  document.getElementById('profileAvatar').onclick = (e)=>{ e.stopPropagation(); if(!AppState.currentUser){ showLoginOverlay(); return; } document.getElementById('profilePopup').classList.toggle('show'); };
+  document.addEventListener('click',(e)=>{ if(!document.getElementById('profileAvatar').contains(e.target)&&!document.getElementById('profilePopup').contains(e.target)) document.getElementById('profilePopup').classList.remove('show'); });
+
+  document.querySelectorAll('.accordion-header').forEach(header=>{
+    header.addEventListener('click',()=>{
+      const parent = header.parentElement;
+      const isActive = parent.classList.contains('active');
+      document.querySelectorAll('.accordion-item').forEach(item=>item.classList.remove('active'));
+      if(!isActive) parent.classList.add('active');
+    });
+  });
+
+  const menuDashboardLink = document.getElementById('menuDashboardLink');
+  if(menuDashboardLink) menuDashboardLink.addEventListener('click',()=>closeSidebarFn());
+
+  document.getElementById('menuDeployBotLink').addEventListener('click',(e)=>{ e.preventDefault(); closeSidebarFn(); setTimeout(()=>openDeployModal(false), 400); });
+  document.getElementById('menuManageBotLink').addEventListener('click',(e)=>{ e.preventDefault(); closeSidebarFn(); setTimeout(openManageBotModal, 400); });
+  document.getElementById('menuCoinsLink').addEventListener('click',(e)=>{ e.preventDefault(); closeSidebarFn(); setTimeout(openCoinsPage, 400); });
+  document.getElementById('menuUserAccountLink').addEventListener('click',(e)=>{ e.preventDefault(); closeSidebarFn(); setTimeout(()=>openUserAccountPage(), 400); });
+  document.getElementById('menuDeployerAccountLink').addEventListener('click',(e)=>{ e.preventDefault(); closeSidebarFn(); setTimeout(openDeployerAccountModal, 400); });
+
+  const settingsBtn = document.getElementById('settingsBtn');
+  const settingsSubmenu = document.getElementById('settingsSubmenu');
+  settingsBtn.onclick = (e)=>{ e.stopPropagation(); settingsSubmenu.classList.toggle('show'); };
+  function setTheme(theme){ if(theme==='light') document.body.classList.add('light'); else document.body.classList.remove('light'); localStorage.setItem('theme',theme); }
+  let savedTheme = localStorage.getItem('theme'); if(savedTheme) setTheme(savedTheme);
+  document.querySelectorAll('#themeOptionsCompact .option-item-compact').forEach(el=>{ el.onclick=()=>{ setTheme(el.getAttribute('data-theme')); document.getElementById('profilePopup').classList.remove('show'); }; });
+
+  document.getElementById('updateProfileBtnCompact').onclick=()=>{ let newName=document.getElementById('profileNameInputCompact').value.trim(); if(newName && AppState.currentUser){ AppState.currentUser.name = newName; updateNavProfile(); document.getElementById('profilePopup').classList.remove('show'); showNotif('Display name updated locally (profile sync coming soon).'); } };
+
+  document.getElementById('logoutBtnPopup').onclick = ()=>logout();
+
+  document.getElementById('newsletterBtn').onclick=()=>showNotif('Subscribed successfully!');
+  document.querySelectorAll('.modal-overlay').forEach(el=>{ el.addEventListener('click',(e)=>{ if(e.target===el) el.classList.remove('active'); }); });
+});
+</script>
+
+</body>
+</html>
