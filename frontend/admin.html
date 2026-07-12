@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
+<title>Adevos-X Admin | Control Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root{
+    --bg-body:#0a0f0a; --bg-surface:#0e1410; --bg-card:#121a14; --border:#1c2a1f;
+    --text-primary:#e2f0e0; --text-secondary:#9bbf8f; --accent:#00e676; --accent-dark:#00b248;
+    --danger:#ff5555; --shadow:0 10px 25px -5px rgba(0,0,0,.5);
+  }
+  body{
+    font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg-body); color:var(--text-primary);
+    min-height:100vh; overflow-x:hidden;
+    background-image:radial-gradient(circle at 15% 20%, rgba(0,230,118,.06), transparent 55%), radial-gradient(circle at 85% 80%, rgba(0,230,118,.04), transparent 55%);
+  }
+  h1,h2,h3,h4,.brand,.modal-header h3{ font-family:'Orbitron',sans-serif; letter-spacing:.5px; }
+  ::-webkit-scrollbar{ width:6px; height:6px; }
+  ::-webkit-scrollbar-thumb{ background:var(--border); border-radius:10px; }
+
+  .login-overlay{ position:fixed; inset:0; background:rgba(0,0,0,.94); backdrop-filter:blur(14px); z-index:10000; display:flex; align-items:center; justify-content:center; overflow-y:auto; padding:1rem 0; }
+  .login-card{ background:var(--bg-surface); border:1px solid var(--accent); border-radius:1.4rem; padding:2.2rem 1.8rem; width:90%; max-width:400px; text-align:center; box-shadow:0 25px 50px -10px black; }
+  .login-badge{ width:56px; height:56px; border-radius:1rem; background:linear-gradient(135deg,var(--accent),#0a4a24); display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; font-size:1.4rem; color:#031b0d; }
+  .login-card h2{ font-size:1.35rem; margin-bottom:.35rem; background:linear-gradient(135deg,var(--accent),#b9f6ca); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .login-card p{ color:var(--text-secondary); font-size:.78rem; margin-bottom:1.4rem; }
+  .login-manual{ display:flex; flex-direction:column; gap:.55rem; text-align:left; }
+  .login-manual input{ background:var(--bg-card); border:1px solid var(--border); border-radius:.5rem; padding:.6rem .7rem; color:var(--text-primary); font-size:.8rem; outline:none; }
+  .login-manual input:focus{ border-color:var(--accent); }
+  .login-manual button{ background:var(--accent); border:none; border-radius:.5rem; padding:.65rem; font-weight:800; color:#031b0d; cursor:pointer; font-size:.8rem; margin-top:.3rem; }
+  .login-error{ color:var(--danger); font-size:.72rem; margin-top:.6rem; display:none; }
+  .login-api-row{ display:flex; align-items:center; gap:.4rem; background:var(--bg-card); border:1px solid var(--border); border-radius:.5rem; padding:.4rem .6rem; margin-bottom:1rem; font-size:.62rem; color:var(--text-secondary); text-align:left; }
+  .login-api-row input{ flex:1; background:transparent; border:none; color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:.62rem; outline:none; }
+
+  .shell{ display:flex; min-height:100vh; }
+  .adm-sidebar{ width:250px; flex-shrink:0; background:var(--bg-surface); border-right:1px solid var(--border); position:fixed; top:0; left:0; height:100vh; overflow-y:auto; z-index:500; transition:left .3s; padding-bottom:1rem; }
+  .brand-row{ display:flex; align-items:center; gap:.6rem; padding:1.1rem 1rem; border-bottom:1px solid var(--border); }
+  .brand-icon{ width:34px; height:34px; border-radius:.6rem; background:linear-gradient(135deg,var(--accent),#0a4a24); display:flex; align-items:center; justify-content:center; color:#031b0d; font-size:.95rem; }
+  .brand{ font-size:.85rem; font-weight:700; color:var(--accent); line-height:1.1; }
+  .brand small{ display:block; font-family:'Plus Jakarta Sans',sans-serif; color:var(--text-secondary); font-size:.6rem; font-weight:500; letter-spacing:0; }
+  .nav-group-label{ font-size:.6rem; text-transform:uppercase; color:var(--text-secondary); font-weight:800; padding:1rem 1.1rem .4rem; letter-spacing:1px; }
+  .nav-item{ display:flex; align-items:center; gap:.65rem; padding:.6rem 1.1rem; font-size:.78rem; font-weight:600; color:var(--text-secondary); cursor:pointer; border-left:3px solid transparent; transition:.15s; }
+  .nav-item i{ width:1.1rem; text-align:center; color:var(--text-secondary); font-size:.85rem; }
+  .nav-item:hover{ background:rgba(0,230,118,.06); color:var(--text-primary); }
+  .nav-item.active{ background:rgba(0,230,118,.1); color:var(--accent); border-left-color:var(--accent); }
+  .nav-item.active i{ color:var(--accent); }
+  .close-adm-sidebar{ display:none; }
+
+  .adm-main{ flex:1; margin-left:250px; min-height:100vh; }
+  .topbar{ position:sticky; top:0; z-index:400; display:flex; align-items:center; justify-content:space-between; padding:.8rem 1.4rem; background:rgba(14,20,16,.9); backdrop-filter:blur(10px); border-bottom:1px solid var(--border); }
+  .topbar-left{ display:flex; align-items:center; gap:.8rem; }
+  .adm-hamburger{ display:none; background:none; border:none; color:var(--accent); font-size:1.2rem; cursor:pointer; }
+  .page-title{ font-size:1rem; font-weight:700; }
+  .page-title span{ color:var(--text-secondary); font-weight:500; font-size:.7rem; display:block; font-family:'Plus Jakarta Sans',sans-serif; margin-top:.1rem; }
+  .topbar-right{ display:flex; align-items:center; gap:.8rem; }
+  .save-status{ font-size:.65rem; color:var(--accent); display:flex; align-items:center; gap:.35rem; opacity:0; transition:.3s; }
+  .save-status.show{ opacity:1; }
+  .adm-avatar{ width:34px; height:34px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.75rem; color:#031b0d; cursor:pointer; }
+  .content-area{ padding:1.4rem; padding-bottom:calc(6rem + env(safe-area-inset-bottom)); max-width:1100px; }
+  body.keyboard-open .content-area{ padding-bottom:calc(10rem + env(safe-area-inset-bottom)); }
+
+  .view-section{ display:none; }
+  .view-section.active{ display:block; animation:fadeIn .25s; }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  .stat-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:.9rem; margin-bottom:1.4rem; }
+  .stat-card{ background:var(--bg-card); border:1px solid var(--border); border-radius:.9rem; padding:1rem; }
+  .stat-card i{ color:var(--accent); font-size:1.1rem; margin-bottom:.5rem; display:block; }
+  .stat-num{ font-size:1.6rem; font-weight:900; font-family:'Orbitron',sans-serif; }
+  .stat-label{ font-size:.68rem; color:var(--text-secondary); margin-top:.15rem; }
+  .hint-box{ background:rgba(0,230,118,.06); border:1px dashed var(--border); border-radius:.7rem; padding:.8rem 1rem; font-size:.72rem; color:var(--text-secondary); line-height:1.5; margin-bottom:1.2rem; }
+  .hint-box b{ color:var(--accent); }
+  .hint-box.warn{ background:rgba(255,85,85,.06); border-color:rgba(255,85,85,.3); }
+
+  .sec-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; flex-wrap:wrap; gap:.6rem; }
+  .sec-head p{ font-size:.75rem; color:var(--text-secondary); margin-top:.2rem; }
+  .btn-accent{ background:var(--accent); border:none; color:#031b0d; padding:.55rem 1.1rem; border-radius:.6rem; font-weight:800; font-size:.75rem; cursor:pointer; display:flex; align-items:center; gap:.4rem; transition:.2s; }
+  .btn-accent:hover{ background:#b9f6ca; }
+  .btn-accent:disabled{ opacity:.5; cursor:not-allowed; }
+  .btn-ghost{ background:var(--bg-card); border:1px solid var(--border); color:var(--text-primary); padding:.4rem .7rem; border-radius:.5rem; font-size:.68rem; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:.3rem; }
+  .btn-ghost:hover{ border-color:var(--accent); color:var(--accent); }
+  .btn-danger{ background:rgba(255,85,85,.1); border:1px solid rgba(255,85,85,.35); color:var(--danger); padding:.4rem .7rem; border-radius:.5rem; font-size:.68rem; font-weight:700; cursor:pointer; }
+  .btn-danger:hover{ background:rgba(255,85,85,.2); }
+
+  .adm-card-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1rem; }
+  .adm-card{ background:var(--bg-card); border:1px solid var(--border); border-radius:1rem; overflow:hidden; transition:.2s; }
+  .adm-card:hover{ border-color:var(--accent); }
+  .adm-card-img{ width:100%; height:130px; object-fit:cover; border-bottom:1px solid var(--border); background:#050705; }
+  .adm-card-body{ padding:.85rem .9rem; }
+  .adm-card-body h4{ font-size:.85rem; margin-bottom:.3rem; font-family:'Orbitron',sans-serif; }
+  .adm-card-body h4 b{ color:var(--accent); }
+  .adm-card-body p{ font-size:.72rem; color:var(--text-secondary); line-height:1.45; margin-bottom:.7rem; min-height:2.2em; }
+  .adm-tag{ display:inline-block; background:rgba(0,230,118,.1); color:var(--accent); font-size:.6rem; font-weight:800; padding:.15rem .5rem; border-radius:1rem; margin-bottom:.5rem; font-family:'JetBrains Mono',monospace; }
+  .adm-tag.featured{ background:rgba(0,230,118,.25); }
+  .adm-tag.inactive{ background:rgba(255,85,85,.15); color:var(--danger); }
+  .adm-card-actions{ display:flex; gap:.4rem; flex-wrap:wrap; }
+
+  .log-row{ display:flex; align-items:flex-start; gap:.7rem; background:var(--bg-card); border:1px solid var(--border); border-radius:.7rem; padding:.7rem .9rem; margin-bottom:.6rem; }
+  .log-row .log-meta{ flex:1; min-width:0; }
+  .log-row .log-time-tag{ font-size:.6rem; color:var(--accent); font-family:'JetBrains Mono',monospace; display:block; margin-bottom:.15rem; }
+  .log-row .log-text{ font-size:.76rem; color:var(--text-primary); }
+  .log-row .log-actions{ display:flex; gap:.35rem; flex-shrink:0; }
+  .icon-btn{ background:var(--bg-surface); border:1px solid var(--border); width:28px; height:28px; border-radius:.4rem; color:var(--text-secondary); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:.7rem; }
+  .icon-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .icon-btn.del:hover{ border-color:var(--danger); color:var(--danger); }
+
+  .form-grid{ display:grid; grid-template-columns:1fr; gap:.8rem; }
+  .form-grid.two{ grid-template-columns:1fr 1fr; }
+  .f-group label{ display:block; font-size:.65rem; text-transform:uppercase; font-weight:800; color:var(--text-secondary); margin-bottom:.3rem; letter-spacing:.4px; }
+  .f-group input, .f-group textarea, .f-group select{ width:100%; background:var(--bg-card); border:1px solid var(--border); border-radius:.5rem; padding:.55rem .7rem; color:var(--text-primary); font-size:.78rem; outline:none; font-family:inherit; }
+  .f-group input:focus, .f-group textarea:focus, .f-group select:focus{ border-color:var(--accent); }
+  .f-group small{ color:var(--text-secondary); font-size:.62rem; display:block; margin-top:.25rem; }
+  .checkbox-row{ display:flex; align-items:center; gap:.5rem; background:var(--bg-card); border:1px solid var(--border); border-radius:.5rem; padding:.6rem .7rem; }
+  .checkbox-row input{ width:auto; }
+  .img-preview-row{ display:flex; align-items:center; gap:.6rem; margin-bottom:.5rem; }
+  .img-preview-box{ width:52px; height:52px; border-radius:.5rem; background:var(--bg-surface); border:1px solid var(--border); object-fit:cover; }
+
+  .settings-card{ background:var(--bg-card); border:1px solid var(--border); border-radius:1rem; padding:1.1rem 1.2rem; margin-bottom:1rem; }
+  .settings-card h4{ font-size:.85rem; color:var(--accent); margin-bottom:.2rem; }
+  .settings-card > p.desc{ font-size:.7rem; color:var(--text-secondary); margin-bottom:.9rem; }
+  .num-row{ display:flex; align-items:center; gap:.6rem; background:var(--bg-surface); border:1px solid var(--border); border-radius:.6rem; padding:.6rem .8rem; margin-bottom:.6rem; }
+  .num-row .num-label{ flex:1; font-size:.75rem; }
+  .num-row input, .num-row select{ width:100px; text-align:right; background:transparent; border:none; border-bottom:1px solid var(--border); color:var(--accent); font-weight:800; font-size:.85rem; font-family:'JetBrains Mono',monospace; outline:none; padding:.2rem; }
+
+  .acc-row{ display:flex; align-items:center; gap:.7rem; background:var(--bg-surface); border:1px solid var(--border); border-radius:.6rem; padding:.7rem .8rem; margin-bottom:.6rem; }
+  .acc-row i{ color:var(--accent); font-size:1rem; width:1.2rem; text-align:center; }
+  .acc-row .acc-fields{ flex:1; display:grid; grid-template-columns:1fr 1fr; gap:.5rem; }
+  .acc-row input{ background:var(--bg-card); border:1px solid var(--border); border-radius:.4rem; padding:.4rem .55rem; color:var(--text-primary); font-size:.72rem; outline:none; }
+
+  .modal-overlay{ position:fixed; inset:0; background:rgba(0,0,0,.85); backdrop-filter:blur(8px); z-index:9000; display:none; align-items:center; justify-content:center; padding:1rem; overflow-y:auto; }
+  .modal-overlay.active{ display:flex; }
+  .modal-box{ background:var(--bg-surface); border:1px solid var(--border); border-radius:1.1rem; width:100%; max-width:480px; box-shadow:0 25px 50px rgba(0,0,0,.8); max-height:90vh; overflow-y:auto; animation:modalIn .25s ease; transition:max-height .2s ease; }
+  @keyframes modalIn{ from{opacity:0; transform:scale(.94) translateY(15px);} to{opacity:1; transform:scale(1) translateY(0);} }
+  .modal-header{ display:flex; align-items:center; justify-content:space-between; padding:1rem 1.2rem; border-bottom:1px solid var(--border); background:linear-gradient(135deg,rgba(0,230,118,.12),transparent); border-radius:1.1rem 1.1rem 0 0; }
+  .modal-header h3{ font-size:.9rem; color:var(--accent); }
+  .modal-close{ background:none; border:none; color:var(--text-secondary); font-size:1rem; cursor:pointer; }
+  .modal-close:hover{ color:var(--danger); }
+  .modal-body{ padding:1.1rem 1.2rem; }
+  .modal-footer{ display:flex; gap:.6rem; padding:0 1.2rem 1.2rem; }
+  .modal-footer .btn-accent{ flex:1; justify-content:center; }
+  .modal-footer .btn-ghost{ flex:0 0 auto; }
+
+  #toastWrap{ position:fixed; top:14px; left:50%; transform:translateX(-50%); z-index:99999; display:flex; flex-direction:column; gap:.4rem; align-items:center; }
+  .toast{ background:var(--bg-surface); border:1px solid var(--accent); color:var(--text-primary); padding:.55rem 1rem; border-radius:.6rem; font-size:.75rem; font-weight:600; box-shadow:0 8px 20px rgba(0,0,0,.7); display:flex; align-items:center; gap:.5rem; animation:toastIn .25s; }
+  .toast.err{ border-color:var(--danger); }
+  .toast i{ color:var(--accent); } .toast.err i{ color:var(--danger); }
+  @keyframes toastIn{ from{opacity:0; transform:translateY(-14px);} to{opacity:1; transform:translateY(0);} }
+
+  .overlay-dim{ position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:490; display:none; }
+  .overlay-dim.active{ display:block; }
+  .loading-spin{ display:inline-block; width:14px; height:14px; border:2px solid rgba(0,230,118,.3); border-top-color:var(--accent); border-radius:50%; animation:spin .7s linear infinite; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .center-loading{ text-align:center; padding:3rem; color:var(--text-secondary); font-size:.8rem; }
+
+  @media (max-width:860px){
+    .adm-sidebar{ left:-260px; width:250px; z-index:2000; box-shadow:0 0 40px rgba(0,0,0,.6); }
+    .adm-sidebar.open{ left:0; }
+    .adm-main{ margin-left:0; }
+    .adm-hamburger{ display:block; }
+    .close-adm-sidebar{ display:block; position:absolute; top:.8rem; right:.8rem; color:var(--accent); cursor:pointer; }
+    .form-grid.two{ grid-template-columns:1fr; }
+    .acc-row .acc-fields{ grid-template-columns:1fr; }
+  }
+  @media (max-width:420px){
+    .content-area{ padding:1rem .8rem calc(6rem + env(safe-area-inset-bottom)); }
+    .page-title{ font-size:.85rem; }
+    .topbar{ padding:.7rem .9rem; }
+    .modal-body{ padding:.9rem; }
+    .modal-footer{ flex-direction:column-reverse; }
+    .modal-footer .btn-ghost{ width:100%; justify-content:center; }
+    .num-row{ flex-wrap:wrap; }
+    .num-row input, .num-row select{ width:100%; text-align:left; margin-top:.3rem; }
+    .adm-card-actions{ width:100%; }
+    .adm-card-actions button{ flex:1; justify-content:center; }
+  }
+</style>
+</head>
+<body>
+
+<div id="toastWrap"></div>
+
+<!-- ============ LOGIN ============ -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-card">
+    <div class="login-badge"><i class="fas fa-shield-halved"></i></div>
+    <h2>Adevos-X Admin</h2>
+    <p>Sign in to manage your website content</p>
+    <div class="login-api-row"><i class="fas fa-server"></i><input id="apiBaseInput" placeholder="API base URL"></div>
+    <div class="login-manual">
+      <input type="text" id="adminUserInput" placeholder="Username" value="admin">
+      <input type="password" id="adminPassInput" placeholder="Password">
+      <input type="text" id="admin2faInput" placeholder="2FA code (only if enabled)">
+      <button onclick="adminManualLogin()" id="loginBtn">Sign In</button>
+      <div class="login-error" id="loginError"></div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay-dim" id="ovDim"></div>
+
+<div class="shell" id="appShell" style="display:none;">
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="adm-sidebar" id="admSidebar">
+    <div class="close-adm-sidebar" id="closeAdmSidebar"><i class="fas fa-times"></i></div>
+    <div class="brand-row">
+      <div class="brand-icon"><i class="fas fa-terminal"></i></div>
+      <div class="brand">Adevos-X<small>Control Center</small></div>
+    </div>
+
+    <div class="nav-group-label">Overview</div>
+    <div class="nav-item active" data-view="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</div>
+
+    <div class="nav-group-label">Homepage</div>
+    <div class="nav-item" data-view="slides"><i class="fas fa-images"></i> Slider Cards</div>
+    <div class="nav-item" data-view="touchcards"><i class="fas fa-grip"></i> Get In Touch Cards</div>
+    <div class="nav-item" data-view="services"><i class="fas fa-layer-group"></i> Our Services</div>
+    <div class="nav-item" data-view="updates"><i class="fas fa-bell"></i> Updates Feed</div>
+    <div class="nav-item" data-view="feedback"><i class="fas fa-comment-dots"></i> Client Feedback</div>
+    <div class="nav-item" data-view="social"><i class="fas fa-share-nodes"></i> Social Links</div>
+
+    <div class="nav-group-label">Bot Platform</div>
+    <div class="nav-item" data-view="bots"><i class="fas fa-robot"></i> Bots Catalog</div>
+    <div class="nav-item" data-view="tutorials"><i class="fas fa-graduation-cap"></i> Tutorials</div>
+    <div class="nav-item" data-view="platforms"><i class="fas fa-server"></i> Deployment Platforms</div>
+    <div class="nav-item" data-view="paymentmethods"><i class="fas fa-wallet"></i> Payment Methods</div>
+    <div class="nav-item" data-view="pricing"><i class="fas fa-coins"></i> Pricing & Coins</div>
+    <div class="nav-item" data-view="subscription"><i class="fas fa-calendar-check"></i> Subscription Rules</div>
+    <div class="nav-item" data-view="deployer"><i class="fas fa-user-shield"></i> Deployer Plan</div>
+    <div class="nav-item" data-view="links"><i class="fas fa-link"></i> Platform Links</div>
+
+    <div class="nav-group-label">Site Behavior</div>
+    <div class="nav-item" data-view="music"><i class="fas fa-music"></i> Deployment Music</div>
+    <div class="nav-item" data-view="notifications"><i class="fas fa-bell-slash"></i> Update Notifications</div>
+
+    <div class="nav-group-label">Monitoring</div>
+    <div class="nav-item" data-view="activity"><i class="fas fa-satellite-dish"></i> Live Activity</div>
+    <div class="nav-item" data-view="deployments"><i class="fas fa-server"></i> Deployments</div>
+    <div class="nav-item" data-view="users"><i class="fas fa-users"></i> Users</div>
+    <div class="nav-item" data-view="payments"><i class="fas fa-money-check-dollar"></i> Payments</div>
+
+    <div class="nav-group-label">System</div>
+    <div class="nav-item" data-view="reset"><i class="fas fa-rotate-left"></i> Reset Demo Data</div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="adm-main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="adm-hamburger" id="admHamburger"><i class="fas fa-bars"></i></button>
+        <div class="page-title" id="pageTitle">Dashboard<span>Overview of your website content</span></div>
+      </div>
+      <div class="topbar-right">
+        <div class="save-status" id="saveStatus"><i class="fas fa-check-circle"></i> Saved</div>
+        <div class="adm-avatar" id="admAvatar" title="Logout">AX</div>
+      </div>
+    </div>
+
+    <div class="content-area" id="contentArea">
+      <!-- Views are injected here by JS -->
+    </div>
+  </main>
+</div>
+
+<!-- ============ GENERIC MODAL ============ -->
+<div class="modal-overlay" id="genModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="genModalTitle">Edit Item</h3>
+      <button class="modal-close" onclick="closeGenModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="genModalBody"></div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeGenModal()">Cancel</button>
+      <button class="btn-accent" id="genModalSaveBtn"><i class="fas fa-floppy-disk"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================================
+   ADEVOS-X ADMIN — backend-integrated control center
+   ========================================================================= */
+const DEFAULT_API_BASE = window.ADEVOS_API_BASE || '/api';
+
+/* ===================== API HELPER ===================== */
+function apiBase(){ return localStorage.getItem('adevosApiBase') || DEFAULT_API_BASE; }
+function adminToken(){ return localStorage.getItem('adevosAdminToken') || ''; }
+async function api(path, opts = {}) {
+  const headers = { 'Content-Type': 'application/json', ...(opts.headers||{}) };
+  const token = adminToken();
+  if(token) headers.Authorization = `Bearer ${token}`;
+  const res = await fetch(apiBase() + path, { ...opts, headers, body: opts.body ? JSON.stringify(opts.body) : undefined });
+  let data = null;
+  try { data = await res.json(); } catch(e) {}
+  if(!res.ok) throw Object.assign(new Error(data?.error || `Request failed (${res.status})`), { status: res.status, data });
+  return data;
+}
+const apiGet = (p) => api(p);
+const apiPost = (p,b) => api(p,{method:'POST',body:b});
+const apiPut = (p,b) => api(p,{method:'PUT',body:b});
+const apiPatch = (p,b) => api(p,{method:'PATCH',body:b});
+const apiDelete = (p) => api(p,{method:'DELETE'});
+
+function flashSaved(){ const el=document.getElementById('saveStatus'); el.classList.add('show'); clearTimeout(window._svt); window._svt=setTimeout(()=>el.classList.remove('show'),1600); }
+function toast(msg,type='ok'){ const wrap=document.getElementById('toastWrap'); const t=document.createElement('div'); t.className='toast'+(type==='err'?' err':''); t.innerHTML=`<i class="fas fa-${type==='err'?'circle-exclamation':'circle-check'}"></i><span>${msg}</span>`; wrap.appendChild(t); setTimeout(()=>t.remove(),3500); }
+function emptyMsg(msg){ return `<div class="hint-box" style="text-align:center;"><i class="fas fa-inbox"></i> ${msg}</div>`; }
+function val(id){ const el=document.getElementById(id); return el ? el.value.trim() : ''; }
+function esc(s){ return String(s==null?'':s).replace(/"/g,'&quot;'); }
+
+/* ===================== LOGIN ===================== */
+document.getElementById('apiBaseInput').value = apiBase();
+document.getElementById('apiBaseInput').addEventListener('change', (e)=>{ localStorage.setItem('adevosApiBase', e.target.value.trim()); });
+
+async function adminManualLogin(){
+  const btn = document.getElementById('loginBtn');
+  const errEl = document.getElementById('loginError');
+  errEl.style.display = 'none';
+  const username = val('adminUserInput');
+  const password = document.getElementById('adminPassInput').value;
+  const otp = val('admin2faInput');
+  if(!username || !password){ errEl.textContent = 'Username na password vinahitajika.'; errEl.style.display='block'; return; }
+  btn.disabled = true; btn.innerHTML = '<span class="loading-spin"></span> Inaingia...';
+  try {
+    const body = { username, password };
+    if(otp) body.otp = otp;
+    const res = await apiPost('/auth/admin-login', body);
+    localStorage.setItem('adevosAdminToken', res.token);
+    await enterApp();
+  } catch(e) {
+    errEl.textContent = e.message || 'Kuingia kumeshindwa.';
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false; btn.innerHTML = 'Sign In';
+  }
+}
+function adminLogout(){ localStorage.removeItem('adevosAdminToken'); location.reload(); }
+
+async function enterApp(){
+  document.getElementById('loginOverlay').style.display = 'none';
+  document.getElementById('appShell').style.display = '';
+  bindShellEvents();
+  await switchView('dashboard');
+}
+
+window.addEventListener('load', async ()=>{
+  if(adminToken()){
+    try { await apiGet('/admin/activity'); await enterApp(); }
+    catch(e){ localStorage.removeItem('adevosAdminToken'); }
+  }
+});
+
+/* ===================== NAV / VIEW SWITCHING ===================== */
+const VIEW_META = {
+  dashboard:["Dashboard","Overview of your website content"],
+  slides:["Slider Cards","Homepage hero slider — image, title, CTA, action"],
+  touchcards:["Get In Touch Cards","The action cards shown on the homepage"],
+  services:["Our Services","The services grid shown on the homepage"],
+  updates:["Updates Feed","System log entries & toast notifications"],
+  feedback:["Client Feedback","Testimonials shown on the homepage"],
+  social:["Social Links","Icons in the Stay Connected section"],
+  bots:["Bots Catalog","All bots — toggle isFeatured for the User Account bot"],
+  tutorials:["Tutorials","Video tutorials shown to users"],
+  platforms:["Deployment Platforms","Heroku, Panel, and any platform you add"],
+  paymentmethods:["Payment Methods","Online, manual & coin payment options"],
+  pricing:["Pricing & Coins","Deployment price & AV Coin economy"],
+  subscription:["Subscription Rules","Auto-expiry, renewal discount & reminders"],
+  deployer:["Deployer Plan","Pricing & benefits for Deployer accounts"],
+  links:["Platform Links","WhatsApp, support & assistant links used site-wide"],
+  music:["Deployment Music","Tracks & playback settings for the Deployment page"],
+  notifications:["Update Notifications","Control the homepage pop-up behavior"],
+  activity:["Live Activity","Real-time feed of platform events"],
+  deployments:["Deployments","Bots deployed across the platform"],
+  users:["Users","Manage accounts, access, coins & messaging"],
+  payments:["Payments","Transaction history & manual verification"],
+  reset:["Reset Demo Data","Restore original default content"],
+};
+
+async function switchView(view){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.view===view));
+  const t = VIEW_META[view];
+  document.getElementById('pageTitle').innerHTML = `${t[0]}<span>${t[1]}</span>`;
+  closeAdmSidebarFn();
+  const area = document.getElementById('contentArea');
+  area.innerHTML = `<div class="center-loading"><span class="loading-spin"></span> Loading...</div>`;
+  try {
+    const html = await VIEW_RENDERERS[view]();
+    area.innerHTML = html;
+    if(VIEW_AFTER_RENDER[view]) VIEW_AFTER_RENDER[view]();
+  } catch(e) {
+    area.innerHTML = `<div class="hint-box warn"><i class="fas fa-triangle-exclamation"></i> Imeshindwa kupakia: ${e.message}</div>`;
+  }
+}
+
+function bindShellEvents(){
+  document.querySelectorAll('.nav-item').forEach(n=>n.addEventListener('click',()=>switchView(n.dataset.view)));
+  document.getElementById('admHamburger').onclick = ()=>{ document.getElementById('admSidebar').classList.add('open'); document.getElementById('ovDim').classList.add('active'); };
+  document.getElementById('closeAdmSidebar').onclick = closeAdmSidebarFn;
+  document.getElementById('ovDim').onclick = closeAdmSidebarFn;
+  document.getElementById('admAvatar').onclick = ()=>{ if(confirm('Logout kutoka Admin panel?')) adminLogout(); };
+}
+function closeAdmSidebarFn(){ document.getElementById('admSidebar').classList.remove('open'); document.getElementById('ovDim').classList.remove('active'); }
+
+/* ===================== GENERIC MODAL ===================== */
+function showModal(title, bodyHtml, onSave){
+  document.getElementById('genModalTitle').innerText = title;
+  document.getElementById('genModalBody').innerHTML = bodyHtml;
+  const btn = document.getElementById('genModalSaveBtn');
+  const newBtn = btn.cloneNode(true); btn.parentNode.replaceChild(newBtn, btn);
+  newBtn.addEventListener('click', async ()=>{
+    newBtn.disabled = true; const orig = newBtn.innerHTML; newBtn.innerHTML = '<span class="loading-spin"></span> Inahifadhi...';
+    try { await onSave(); } catch(e) { toast(e.message,'err'); }
+    newBtn.disabled = false; newBtn.innerHTML = orig;
+  });
+  document.getElementById('genModal').classList.add('active');
+  requestAnimationFrame(()=>{
+    const first = document.querySelector('#genModalBody input:not([disabled]), #genModalBody textarea:not([disabled]), #genModalBody select:not([disabled])');
+    if(first){ first.focus({preventScroll:true}); scrollFieldIntoView(first); }
+  });
+}
+function closeGenModal(){ document.getElementById('genModal').classList.remove('active'); }
+document.getElementById('genModal').addEventListener('click',(e)=>{ if(e.target.id==='genModal') closeGenModal(); });
+
+/* ===================== VIEW RENDERERS ===================== */
+const VIEW_RENDERERS = {};
+const VIEW_AFTER_RENDER = {};
+
+/* ---------- DASHBOARD ---------- */
+VIEW_RENDERERS.dashboard = async () => {
+  const [slides, touchcards, bots, feedback, updates, users, deployments] = await Promise.all([
+    apiGet('/admin/slides'), apiGet('/admin/touchcards'), apiGet('/admin/bots'),
+    apiGet('/admin/feedback'), apiGet('/admin/updates'), apiGet('/admin/users'), apiGet('/admin/deployments'),
+  ]);
+  const online = deployments.filter(d=>d.status==='online').length;
+  return `
+    <div class="hint-box"><i class="fas fa-circle-info"></i> Kila mabadiliko hapa yanaonekana <b>papo hapo</b> kwenye public.html — hakuna localStorage tena, yote yanapita kwenye backend halisi.</div>
+    <div class="stat-grid">
+      <div class="stat-card"><i class="fas fa-images"></i><div class="stat-num">${slides.length}</div><div class="stat-label">Slider cards</div></div>
+      <div class="stat-card"><i class="fas fa-grip"></i><div class="stat-num">${touchcards.length}</div><div class="stat-label">Get in touch cards</div></div>
+      <div class="stat-card"><i class="fas fa-robot"></i><div class="stat-num">${bots.length}</div><div class="stat-label">Bots in catalog</div></div>
+      <div class="stat-card"><i class="fas fa-comment-dots"></i><div class="stat-num">${feedback.length}</div><div class="stat-label">Client feedbacks</div></div>
+      <div class="stat-card"><i class="fas fa-bell"></i><div class="stat-num">${updates.length}</div><div class="stat-label">Update logs</div></div>
+      <div class="stat-card"><i class="fas fa-users"></i><div class="stat-num">${users.length}</div><div class="stat-label">Registered users</div></div>
+      <div class="stat-card"><i class="fas fa-server"></i><div class="stat-num">${online}</div><div class="stat-label">Active deployments</div></div>
+    </div>
+    <div class="sec-head"><div><h3 style="font-size:.95rem;">Quick actions</h3></div></div>
+    <div class="adm-card-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
+      <div class="adm-card" style="padding:1rem;cursor:pointer;" onclick="switchView('slides')"><i class="fas fa-plus" style="color:var(--accent);margin-bottom:.5rem;display:block;"></i><b style="font-size:.8rem;">Add a slide</b></div>
+      <div class="adm-card" style="padding:1rem;cursor:pointer;" onclick="switchView('bots')"><i class="fas fa-plus" style="color:var(--accent);margin-bottom:.5rem;display:block;"></i><b style="font-size:.8rem;">Add a bot</b></div>
+      <div class="adm-card" style="padding:1rem;cursor:pointer;" onclick="switchView('updates')"><i class="fas fa-plus" style="color:var(--accent);margin-bottom:.5rem;display:block;"></i><b style="font-size:.8rem;">Post an update</b></div>
+      <div class="adm-card" style="padding:1rem;cursor:pointer;" onclick="switchView('deployments')"><i class="fas fa-server" style="color:var(--accent);margin-bottom:.5rem;display:block;"></i><b style="font-size:.8rem;">View deployments</b></div>
+    </div>`;
+};
+
+/* ---------- SLIDES ---------- */
+VIEW_RENDERERS.slides = async () => {
+  const slides = await apiGet('/admin/slides');
+  window._slidesCache = slides;
+  const cards = slides.map(s => `
+    <div class="adm-card">
+      <img src="${s.img}" class="adm-card-img" onerror="this.style.opacity=0.2">
+      <div class="adm-card-body">
+        <span class="adm-tag">${s.actionType==='external'?'external link':s.action}</span>
+        <h4>${s.title}</h4>
+        <p><i class="fas fa-arrow-pointer" style="color:var(--accent);"></i> CTA: "${s.cta||''}"</p>
+        <div class="adm-card-actions">
+          <button class="btn-ghost" onclick="openSlideForm('${s._id}')"><i class="fas fa-pen"></i> Edit</button>
+          <button class="btn-danger" onclick="deleteGeneric('slides','${s._id}')"><i class="fas fa-trash"></i> Delete</button>
+        </div>
+      </div>
+    </div>`).join('') || emptyMsg('No slides yet.');
+  return `<div class="sec-head"><div><p>The hero cards shown in the homepage slider.</p></div><button class="btn-accent" onclick="openSlideForm()"><i class="fas fa-plus"></i> Add Slide</button></div><div class="adm-card-grid">${cards}</div>`;
+};
+function openSlideForm(id){
+  const s = id ? window._slidesCache.find(x=>x._id===id) : {img:'',title:'',cta:'',actionType:'internal',action:'support',url:'',imagePosition:'center center'};
+  showModal(id?'Edit Slide':'Add Slide', `
+    <div class="form-grid">
+      <div class="f-group"><label>Picture URL</label><input id="f_img" value="${esc(s.img)}"></div>
+      <div class="f-group"><label>Title</label><input id="f_title" value="${esc(s.title)}"></div>
+      <div class="f-group"><label>CTA Text</label><input id="f_cta" value="${esc(s.cta)}"></div>
+      <div class="f-group"><label>Where does the button lead?</label>
+        <select id="f_actionType" onchange="toggleActionFields('slide')">
+          <option value="internal" ${s.actionType!=='external'?'selected':''}>A section on public.html</option>
+          <option value="external" ${s.actionType==='external'?'selected':''}>External link</option>
+        </select>
+      </div>
+      <div class="f-group" id="slide_internal_wrap" style="${s.actionType==='external'?'display:none;':''}">
+        <label>Section</label>
+        <select id="f_action">
+          <option value="support" ${s.action==='support'?'selected':''}>Support card</option>
+          <option value="tutorials" ${s.action==='tutorials'?'selected':''}>Tutorials modal</option>
+          <option value="coins" ${s.action==='coins'?'selected':''}>AV Coins page</option>
+          <option value="deployer" ${s.action==='deployer'?'selected':''}>Deployer Account modal</option>
+        </select>
+      </div>
+      <div class="f-group" id="slide_external_wrap" style="${s.actionType==='external'?'':'display:none;'}"><label>External URL</label><input id="f_url" value="${esc(s.url)}"></div>
+    </div>`, async ()=>{
+      const actionType = val('f_actionType');
+      const body = { img:val('f_img'), title:val('f_title'), cta:val('f_cta'), actionType, action: actionType==='internal'?val('f_action'):'', url: actionType==='external'?val('f_url'):'' };
+      if(!body.img||!body.title) throw new Error('Picture and title are required.');
+      if(id) await apiPut(`/admin/slides/${id}`, body); else await apiPost('/admin/slides', body);
+      flashSaved(); closeGenModal(); toast('Slide saved!'); switchView('slides');
+    });
+}
+function toggleActionFields(prefix){
+  const type = document.getElementById(prefix==='slide'?'f_actionType':'tc_actionType').value;
+  const intWrap = document.getElementById(prefix+'_internal_wrap');
+  const extWrap = document.getElementById(prefix+'_external_wrap');
+  if(intWrap) intWrap.style.display = type==='external' ? 'none' : '';
+  if(extWrap) extWrap.style.display = type==='external' ? '' : 'none';
+}
+
+/* ---------- TOUCH CARDS ---------- */
+VIEW_RENDERERS.touchcards = async () => {
+  const cards = await apiGet('/admin/touchcards');
+  window._touchCache = cards;
+  const html = cards.map(c => `
+    <div class="adm-card">
+      <img src="${c.img}" class="adm-card-img" onerror="this.style.opacity=0.2">
+      <div class="adm-card-body">
+        <span class="adm-tag">${c.key}</span>
+        <h4><b>${c.title}</b></h4><p>${c.desc}</p>
+        <div class="adm-card-actions">
+          <button class="btn-ghost" onclick="openTouchForm('${c._id}')"><i class="fas fa-pen"></i> Edit</button>
+          <button class="btn-danger" onclick="deleteGeneric('touchcards','${c._id}')"><i class="fas fa-trash"></i> Delete</button>
+        </div>
+      </div>
+    </div>`).join('') || emptyMsg('No cards yet.');
+  return `<div class="sec-head"><div><p>Cards shown in "Get in touch". Heading renders bold automatically.</p></div><button class="btn-accent" onclick="openTouchForm()"><i class="fas fa-plus"></i> Add Card</button></div><div class="adm-card-grid">${html}</div>`;
+};
+function openTouchForm(id){
+  const c = id ? window._touchCache.find(x=>x._id===id) : {key:'',title:'',desc:'',img:'',btn:'',actionType:'internal',action:'deployModal',url:'',layout:'image-top'};
+  showModal(id?'Edit Card':'Add Card', `
+    <div class="form-grid">
+      <div class="f-group"><label>Internal Key (unique)</label><input id="f_key" value="${esc(c.key)}" placeholder="e.g. deploy"></div>
+      <div class="f-group"><label>Heading</label><input id="f_title" value="${esc(c.title)}"></div>
+      <div class="f-group"><label>Description</label><textarea id="f_desc" rows="3">${esc(c.desc)}</textarea></div>
+      <div class="f-group"><label>Picture URL</label><input id="f_img" value="${esc(c.img)}"></div>
+      <div class="f-group"><label>Button Text</label><input id="f_btn" value="${esc(c.btn)}"></div>
+      <div class="f-group"><label>Layout</label>
+        <select id="f_layout">
+          <option value="image-top" ${c.layout==='image-top'?'selected':''}>Image on top</option>
+          <option value="image-left" ${c.layout==='image-left'?'selected':''}>Image left</option>
+          <option value="image-right" ${c.layout==='image-right'?'selected':''}>Image right</option>
+          <option value="image-background" ${c.layout==='image-background'?'selected':''}>Image as background</option>
+        </select>
+      </div>
+      <div class="f-group"><label>Where does the button lead?</label>
+        <select id="tc_actionType" onchange="toggleActionFields('tc')">
+          <option value="internal" ${c.actionType!=='external'?'selected':''}>A section/modal on public.html</option>
+          <option value="external" ${c.actionType==='external'?'selected':''}>External link</option>
+        </select>
+      </div>
+      <div class="f-group" id="tc_internal_wrap" style="${c.actionType==='external'?'display:none;':''}">
+        <label>Section / Modal</label>
+        <select id="f_action">
+          <option value="deployModal" ${c.action==='deployModal'?'selected':''}>Deploy Bot modal</option>
+          <option value="deployerModal" ${c.action==='deployerModal'?'selected':''}>Deployer Account modal</option>
+          <option value="manageModal" ${c.action==='manageModal'?'selected':''}>Manage Bot modal</option>
+          <option value="tutorialsModal" ${c.action==='tutorialsModal'?'selected':''}>Tutorials modal</option>
+          <option value="feedbackForm" ${c.action==='feedbackForm'?'selected':''}>Inline feedback form</option>
+          <option value="supportDropdown" ${c.action==='supportDropdown'?'selected':''}>Support dropdown</option>
+          <option value="updatesCard" ${c.action==='updatesCard'?'selected':''}>Updates card</option>
+        </select>
+      </div>
+      <div class="f-group" id="tc_external_wrap" style="${c.actionType==='external'?'':'display:none;'}"><label>External URL</label><input id="f_url" value="${esc(c.url)}"></div>
+    </div>`, async ()=>{
+      const actionType = val('tc_actionType');
+      const body = { key:val('f_key')||('card_'+Date.now()), title:val('f_title'), desc:val('f_desc'), img:val('f_img'), btn:val('f_btn'), layout:val('f_layout'), actionType, action: actionType==='internal'?val('f_action'):'', url: actionType==='external'?val('f_url'):'' };
+      if(!body.title||!body.img) throw new Error('Heading and picture are required.');
+      if(id) await apiPut(`/admin/touchcards/${id}`, body); else await apiPost('/admin/touchcards', body);
+      flashSaved(); closeGenModal(); toast('Card saved!'); switchView('touchcards');
+    });
+}
+
+/* ---------- SERVICES ---------- */
+VIEW_RENDERERS.services = async () => {
+  const services = await apiGet('/admin/services');
+  window._servicesCache = services;
+  const html = services.map(s => `
+    <div class="adm-card"><div class="adm-card-body">
+      <i class="${s.icon}" style="color:var(--accent);font-size:1.4rem;margin-bottom:.5rem;display:block;"></i>
+      <h4>${s.title}</h4><p>${s.desc}</p>
+      <div class="adm-card-actions">
+        <button class="btn-ghost" onclick="openServiceForm('${s._id}')"><i class="fas fa-pen"></i> Edit</button>
+        <button class="btn-danger" onclick="deleteGeneric('services','${s._id}')"><i class="fas fa-trash"></i> Delete</button>
+      </div>
+    </div></div>`).join('') || emptyMsg('No services yet.');
+  return `<div class="sec-head"><div><p>The "Our Services" grid.</p></div><button class="btn-accent" onclick="openServiceForm()"><i class="fas fa-plus"></i> Add Service</button></div><div class="adm-card-grid">${html}</div>`;
+};
+function openServiceForm(id){
+  const s = id ? window._servicesCache.find(x=>x._id===id) : {icon:'fas fa-star',title:'',desc:''};
+  showModal(id?'Edit Service':'Add Service', `
+    <div class="form-grid">
+      <div class="f-group"><label>Icon (Font Awesome class)</label><input id="f_icon" value="${esc(s.icon)}"></div>
+      <div class="f-group"><label>Title</label><input id="f_title" value="${esc(s.title)}"></div>
+      <div class="f-group"><label>Description</label><textarea id="f_desc" rows="3">${esc(s.desc)}</textarea></div>
+    </div>`, async ()=>{
+      const body = { icon:val('f_icon')||'fas fa-star', title:val('f_title'), desc:val('f_desc') };
+      if(!body.title) throw new Error('Title is required.');
+      if(id) await apiPut(`/admin/services/${id}`, body); else await apiPost('/admin/services', body);
+      flashSaved(); closeGenModal(); toast('Service saved!'); switchView('services');
+    });
+}
+
+/* ---------- GENERIC DELETE ---------- */
+
+/* ---------- GENERIC DELETE ---------- */
+async function deleteGeneric(resource, id){
+  if(!confirm('Delete this item? This cannot be undone.')) return;
+  try { await apiDelete(`/admin/${resource}/${id}`); toast('Deleted.'); switchView(resource); }
+  catch(e) { toast(e.message,'err'); }
+}
+
+/* ---------- UPDATES ---------- */
+VIEW_RENDERERS.updates = async () => {
+  const updates = await apiGet('/admin/updates');
+  window._updatesCache = updates;
+  const html = updates.map(u => `
+    <div class="log-row">
+      <div class="log-meta"><span class="log-time-tag"><i class="far fa-clock"></i> ${u.time}</span><div class="log-text">${u.text}</div></div>
+      <div class="log-actions">
+        <div class="icon-btn" onclick="openUpdateForm('${u._id}')"><i class="fas fa-pen"></i></div>
+        <div class="icon-btn del" onclick="deleteGeneric('updates','${u._id}')"><i class="fas fa-trash"></i></div>
+      </div>
+    </div>`).join('') || emptyMsg('No updates posted yet.');
+  return `<div class="sec-head"><div><p>Log entries shown in the Updates card and toast pop-ups.</p></div><button class="btn-accent" onclick="openUpdateForm()"><i class="fas fa-plus"></i> Add Update</button></div><div>${html}</div>`;
+};
+function openUpdateForm(id){
+  const u = id ? window._updatesCache.find(x=>x._id===id) : {time:'Just Now',text:''};
+  showModal(id?'Edit Update':'Add Update', `
+    <div class="form-grid">
+      <div class="f-group"><label>Time Label</label><input id="f_time" value="${esc(u.time)}" placeholder="e.g. Just Now"></div>
+      <div class="f-group"><label>Update Text</label><textarea id="f_text" rows="3">${esc(u.text)}</textarea></div>
+    </div>`, async ()=>{
+      const body = { time:val('f_time')||'Just Now', text:val('f_text') };
+      if(!body.text) throw new Error('Update text is required.');
+      if(id) await apiPut(`/admin/updates/${id}`, body); else await apiPost('/admin/updates', body);
+      flashSaved(); closeGenModal(); toast('Update posted!'); switchView('updates');
+    });
+}
+
+/* ---------- FEEDBACK ---------- */
+VIEW_RENDERERS.feedback = async () => {
+  const feedback = await apiGet('/admin/feedback');
+  window._feedbackCache = feedback;
+  const html = feedback.map(f => `
+    <div class="adm-card"><div class="adm-card-body">
+      <p style="font-style:italic;min-height:auto;">"${f.text}"</p>
+      <h4 style="color:var(--accent);font-size:.78rem;">— ${f.author}</h4>
+      <div class="adm-card-actions" style="margin-top:.6rem;">
+        <button class="btn-ghost" onclick="openFeedbackForm('${f._id}')"><i class="fas fa-pen"></i> Edit</button>
+        <button class="btn-danger" onclick="deleteGeneric('feedback','${f._id}')"><i class="fas fa-trash"></i> Delete</button>
+      </div>
+    </div></div>`).join('') || emptyMsg('No feedback yet.');
+  return `<div class="sec-head"><div><p>Testimonials shown in "Client feedback".</p></div><button class="btn-accent" onclick="openFeedbackForm()"><i class="fas fa-plus"></i> Add Feedback</button></div><div class="adm-card-grid">${html}</div>`;
+};
+function openFeedbackForm(id){
+  const f = id ? window._feedbackCache.find(x=>x._id===id) : {text:'',author:''};
+  showModal(id?'Edit Feedback':'Add Feedback', `
+    <div class="form-grid">
+      <div class="f-group"><label>Feedback Text</label><textarea id="f_text" rows="3">${esc(f.text)}</textarea></div>
+      <div class="f-group"><label>Author Name & Role</label><input id="f_author" value="${esc(f.author)}"></div>
+    </div>`, async ()=>{
+      const body = { text:val('f_text'), author:val('f_author') };
+      if(!body.text||!body.author) throw new Error('Both fields are required.');
+      if(id) await apiPut(`/admin/feedback/${id}`, body); else await apiPost('/admin/feedback', body);
+      flashSaved(); closeGenModal(); toast('Feedback saved!'); switchView('feedback');
+    });
+}
+
+/* ---------- SOCIAL LINKS ---------- */
+VIEW_RENDERERS.social = async () => {
+  const social = await apiGet('/admin/settings/social');
+  window._socialCache = social;
+  const rows = social.map((s,i)=>`
+    <div class="acc-row">
+      <i class="${s.icon}"></i>
+      <div class="acc-fields" style="grid-template-columns:1fr;"><input value="${esc(s.url)}" onchange="window._socialCache[${i}].url=this.value"></div>
+      <div style="font-size:.62rem;color:var(--text-secondary);text-transform:uppercase;font-weight:800;width:70px;">${s.key}</div>
+    </div>`).join('');
+  return `<div class="settings-card"><h4><i class="fas fa-share-nodes"></i> Stay Connected Icons</h4><p class="desc">Links behind each social icon.</p><div>${rows}</div></div><button class="btn-accent" onclick="saveSocial()"><i class="fas fa-floppy-disk"></i> Save Social Links</button>`;
+};
+async function saveSocial(){ try{ await apiPut('/admin/settings/social', window._socialCache); flashSaved(); toast('Social links saved!'); } catch(e){ toast(e.message,'err'); } }
+
+/* ---------- BOTS ---------- */
+VIEW_RENDERERS.bots = async () => {
+  const bots = await apiGet('/admin/bots');
+  window._botsCache = bots;
+  const html = bots.map(b => `
+    <div class="adm-card">
+      <img src="${b.img}" class="adm-card-img" onerror="this.style.opacity=0.2">
+      <div class="adm-card-body">
+        ${b.isFeatured ? '<span class="adm-tag featured"><i class="fas fa-star"></i> User Account Bot</span>' : ''}
+        <h4>${b.name}</h4><p>${b.desc}</p>
+        <p style="font-size:.65rem;">By ${b.author||'—'} · Added ${b.addedDate||'—'}</p>
+        <div class="adm-card-actions">
+          <button class="btn-ghost" onclick="openBotForm('${b._id}')"><i class="fas fa-pen"></i> Edit</button>
+          <button class="btn-danger" onclick="deleteGeneric('bots','${b._id}')"><i class="fas fa-trash"></i> Delete</button>
+        </div>
+      </div>
+    </div>`).join('') || emptyMsg('No bots in catalog.');
+  return `<div class="hint-box"><i class="fas fa-circle-info"></i> Bonyeza <b>"Make this the User Account bot"</b> ndani ya edit form kuweka bot fulani kama pekee inayopatikana kwa User Account (Deployer wanaona zote).</div><div class="sec-head"><div><p>All bots — Deployer accounts can pick any; User accounts get only the one marked "User Account Bot".</p></div><button class="btn-accent" onclick="openBotForm()"><i class="fas fa-plus"></i> Add Bot</button></div><div class="adm-card-grid">${html}</div>`;
+};
+function openBotForm(id){
+  const b = id ? window._botsCache.find(x=>x._id===id) : {name:'',desc:'',img:'',github:'',author:'Adevos-X Team',addedDate:'',isFeatured:false};
+  showModal(id?'Edit Bot':'Add Bot', `
+    <div class="form-grid">
+      <div class="f-group"><label>Bot Name</label><input id="f_name" value="${esc(b.name)}"></div>
+      <div class="f-group"><label>Description</label><textarea id="f_desc" rows="3">${esc(b.desc)}</textarea></div>
+      <div class="f-group"><label>Picture URL</label><input id="f_img" value="${esc(b.img)}"></div>
+      <div class="f-group"><label>GitHub Repo Link</label><input id="f_github" value="${esc(b.github)}"></div>
+      <div class="form-grid two">
+        <div class="f-group"><label>Author</label><input id="f_author" value="${esc(b.author)}"></div>
+        <div class="f-group"><label>Added Date (label)</label><input id="f_addedDate" value="${esc(b.addedDate)}" placeholder="e.g. June 28, 2026"></div>
+      </div>
+      <div class="checkbox-row"><input type="checkbox" id="f_featured" ${b.isFeatured?'checked':''}><label for="f_featured" style="text-transform:none;font-size:.75rem;color:var(--text-primary);">Make this the User Account bot (only one allowed)</label></div>
+    </div>`, async ()=>{
+      const body = { name:val('f_name'), desc:val('f_desc'), img:val('f_img'), github:val('f_github'), author:val('f_author'), addedDate:val('f_addedDate'), isFeatured: document.getElementById('f_featured').checked };
+      if(!body.name||!body.img) throw new Error('Name and picture are required.');
+      if(body.isFeatured){
+        const currentFeatured = window._botsCache.find(x=>x.isFeatured && x._id!==id);
+        if(currentFeatured) await apiPut(`/admin/bots/${currentFeatured._id}`, { isFeatured:false });
+      }
+      if(id) await apiPut(`/admin/bots/${id}`, body); else await apiPost('/admin/bots', body);
+      flashSaved(); closeGenModal(); toast('Bot saved!'); switchView('bots');
+    });
+}
+
+/* ---------- TUTORIALS ---------- */
+VIEW_RENDERERS.tutorials = async () => {
+  const tutorials = await apiGet('/admin/tutorials');
+  window._tutorialsCache = tutorials;
+  const html = tutorials.map(t => `
+    <div class="adm-card"><div class="adm-card-body">
+      <span class="adm-tag">${t.tutorialId}</span>
+      <i class="${t.icon}" style="color:var(--accent);font-size:1.2rem;margin:.2rem 0 .5rem;display:block;"></i>
+      <h4>${t.title}</h4><p>${t.desc}</p>
+      <p style="font-size:.65rem;">${t.video?`<i class="fas fa-circle-play" style="color:var(--accent);"></i> Video linked`:`<i class="fas fa-triangle-exclamation" style="color:var(--danger);"></i> No video link`}</p>
+      <div class="adm-card-actions">
+        <button class="btn-ghost" onclick="openTutorialForm('${t._id}')"><i class="fas fa-pen"></i> Edit</button>
+        <button class="btn-danger" onclick="deleteGeneric('tutorials','${t._id}')"><i class="fas fa-trash"></i> Delete</button>
+      </div>
+    </div></div>`).join('') || emptyMsg('No tutorials yet.');
+  return `<div class="sec-head"><div><p>Video tutorials shown to users.</p></div><button class="btn-accent" onclick="openTutorialForm()"><i class="fas fa-plus"></i> Add Tutorial</button></div><div class="adm-card-grid">${html}</div>`;
+};
+function openTutorialForm(id){
+  const t = id ? window._tutorialsCache.find(x=>x._id===id) : {tutorialId:'',title:'',desc:'',icon:'fas fa-play-circle',video:''};
+  showModal(id?'Edit Tutorial':'Add Tutorial', `
+    <div class="form-grid">
+      <div class="f-group"><label>Internal ID (unique)</label><input id="f_id" value="${esc(t.tutorialId)}" placeholder="e.g. whatsapp"></div>
+      <div class="f-group"><label>Title</label><input id="f_title" value="${esc(t.title)}"></div>
+      <div class="f-group"><label>Description</label><textarea id="f_desc" rows="2">${esc(t.desc)}</textarea></div>
+      <div class="f-group"><label>Icon</label><input id="f_icon" value="${esc(t.icon)}"></div>
+      <div class="f-group"><label>Video Link</label><input id="f_video" value="${esc(t.video)}" placeholder="https://... (mp4, YouTube, etc.)"></div>
+    </div>`, async ()=>{
+      const body = { tutorialId:val('f_id')||('tut_'+Date.now()), title:val('f_title'), desc:val('f_desc'), icon:val('f_icon')||'fas fa-play-circle', video:val('f_video') };
+      if(!body.title) throw new Error('Title is required.');
+      if(id) await apiPut(`/admin/tutorials/${id}`, body); else await apiPost('/admin/tutorials', body);
+      flashSaved(); closeGenModal(); toast('Tutorial saved!'); switchView('tutorials');
+    });
+}
+
+/* ---------- DEPLOYMENT PLATFORMS ---------- */
+VIEW_RENDERERS.platforms = async () => {
+  const platforms = await apiGet('/admin/platforms');
+  window._platformsCache = platforms;
+  const html = platforms.map(p => `
+    <div class="adm-card"><div class="adm-card-body">
+      <span class="adm-tag ${p.isActive?'':'inactive'}">${p.isActive?'active':'inactive'}</span>
+      <h4><i class="${p.icon}"></i> ${p.name} <span style="font-size:.6rem;color:var(--text-secondary);">(${p.slug})</span></h4>
+      <p>${p.description||''}</p>
+      <p style="font-size:.62rem;">${p.hasServiceModule?'<i class="fas fa-check-circle" style="color:var(--accent);"></i> Service module connected':'<i class="fas fa-triangle-exclamation" style="color:var(--danger);"></i> No service module yet — deploys will fail until one is added in code'}</p>
+      <div class="adm-card-actions">
+        <button class="btn-ghost" onclick="openPlatformForm('${p._id}')"><i class="fas fa-pen"></i> Edit</button>
+        <button class="btn-ghost" onclick="togglePlatformActive('${p._id}',${!p.isActive})">${p.isActive?'Deactivate':'Activate'}</button>
+        <button class="btn-danger" onclick="deleteGeneric('platforms','${p._id}')"><i class="fas fa-trash"></i> Delete</button>
+      </div>
+    </div></div>`).join('') || emptyMsg('No platforms configured.');
+  return `<div class="hint-box"><i class="fas fa-circle-info"></i> Kuongeza platform mpya halisi (mfano Railway) kunahitaji hatua moja ya code (service module). Metadata hapa inadhibiti tu jina, maelezo, mpangilio, na on/off.</div><div class="sec-head"><div><p>Platforms shown in the Deploy page.</p></div><button class="btn-accent" onclick="openPlatformForm()"><i class="fas fa-plus"></i> Add Platform</button></div><div class="adm-card-grid">${html}</div>`;
+};
+async function togglePlatformActive(id, val){ try{ await apiPut(`/admin/platforms/${id}`,{isActive:val}); toast('Updated!'); switchView('platforms'); }catch(e){toast(e.message,'err');} }
+function openPlatformForm(id){
+  const p = id ? window._platformsCache.find(x=>x._id===id) : {slug:'',name:'',description:'',envKeyHint:'',icon:'fas fa-server',isActive:true,position:0};
+  showModal(id?'Edit Platform':'Add Platform', `
+    <div class="form-grid">
+      <div class="f-group"><label>Slug (matches service module name)</label><input id="f_slug" value="${esc(p.slug)}" placeholder="e.g. railway" ${id?'disabled':''}></div>
+      <div class="f-group"><label>Display Name</label><input id="f_name" value="${esc(p.name)}"></div>
+      <div class="f-group"><label>Description</label><textarea id="f_desc" rows="2">${esc(p.description)}</textarea></div>
+      <div class="f-group"><label>Icon</label><input id="f_icon" value="${esc(p.icon)}"></div>
+      <div class="f-group"><label>Env Key Hint (documentation only)</label><input id="f_envkey" value="${esc(p.envKeyHint)}" placeholder="e.g. RAILWAY_API_KEY"></div>
+      <div class="f-group"><label>Position (ordering)</label><input type="number" id="f_position" value="${p.position||0}"></div>
+    </div>`, async ()=>{
+      const body = { slug:val('f_slug').toLowerCase(), name:val('f_name'), description:val('f_desc'), icon:val('f_icon')||'fas fa-server', envKeyHint:val('f_envkey'), position:parseInt(val('f_position'))||0 };
+      if(!body.slug||!body.name) throw new Error('Slug and name are required.');
+      if(id) await apiPut(`/admin/platforms/${id}`, body); else await apiPost('/admin/platforms', body);
+      flashSaved(); closeGenModal(); toast('Platform saved!'); switchView('platforms');
+    });
+}
+
+/* ---------- PAYMENT METHODS ---------- */
+VIEW_RENDERERS.paymentmethods = async () => {
+  const methods = await apiGet('/admin/payment-methods');
+  window._pmCache = methods;
+  const html = methods.map(m => `
+    <div class="adm-card"><div class="adm-card-body">
+      <span class="adm-tag ${m.isActive?'':'inactive'}">${m.type} · ${m.isActive?'active':'inactive'}</span>
+      <h4><i class="${m.icon}"></i> ${m.name}</h4>
+      <p>${m.instructions||'(online gateway — no manual instructions)'}</p>
+      <div class="adm-card-actions">
+        <button class="btn-ghost" onclick="openPaymentMethodForm('${m._id}')"><i class="fas fa-pen"></i> Edit</button>
+        <button class="btn-ghost" onclick="togglePMActive('${m._id}',${!m.isActive})">${m.isActive?'Deactivate':'Activate'}</button>
+        <button class="btn-danger" onclick="deleteGeneric('payment-methods','${m._id}')"><i class="fas fa-trash"></i> Delete</button>
+      </div>
+    </div></div>`).join('') || emptyMsg('No payment methods configured.');
+  return `<div class="sec-head"><div><p>Online, manual & coin payment options shown to users.</p></div><button class="btn-accent" onclick="openPaymentMethodForm()"><i class="fas fa-plus"></i> Add Method</button></div><div class="adm-card-grid">${html}</div>`;
+};
+async function togglePMActive(id, val){ try{ await apiPut(`/admin/payment-methods/${id}`,{isActive:val}); toast('Updated!'); switchView('paymentmethods'); }catch(e){toast(e.message,'err');} }
+function openPaymentMethodForm(id){
+  const m = id ? window._pmCache.find(x=>x._id===id) : {slug:'',name:'',type:'manual',instructions:'',icon:'fas fa-money-bill-wave',isActive:true,position:0};
+  showModal(id?'Edit Payment Method':'Add Payment Method', `
+    <div class="form-grid">
+      <div class="f-group"><label>Slug (unique)</label><input id="f_slug" value="${esc(m.slug)}" placeholder="e.g. mpesa-ahmed" ${id?'disabled':''}></div>
+      <div class="f-group"><label>Display Name</label><input id="f_name" value="${esc(m.name)}"></div>
+      <div class="f-group"><label>Type</label>
+        <select id="f_type">
+          <option value="manual" ${m.type==='manual'?'selected':''}>Manual (shows instructions)</option>
+          <option value="online" ${m.type==='online'?'selected':''}>Online gateway (needs code, e.g. Paystack)</option>
+          <option value="coins" ${m.type==='coins'?'selected':''}>AV Coins</option>
+        </select>
+      </div>
+      <div class="f-group"><label>Instructions (for Manual type)</label><textarea id="f_instructions" rows="2" placeholder="e.g. +255 XXX XXX XXX — M-Pesa">${esc(m.instructions)}</textarea></div>
+      <div class="f-group"><label>Icon</label><input id="f_icon" value="${esc(m.icon)}"></div>
+      <div class="f-group"><label>Position</label><input type="number" id="f_position" value="${m.position||0}"></div>
+    </div>`, async ()=>{
+      const body = { slug:val('f_slug').toLowerCase(), name:val('f_name'), type:val('f_type'), instructions:val('f_instructions'), icon:val('f_icon')||'fas fa-money-bill-wave', position:parseInt(val('f_position'))||0 };
+      if(!body.slug||!body.name) throw new Error('Slug and name are required.');
+      if(id) await apiPut(`/admin/payment-methods/${id}`, body); else await apiPost('/admin/payment-methods', body);
+      flashSaved(); closeGenModal(); toast('Payment method saved!'); switchView('paymentmethods');
+    });
+}
+
+/* ---------- PRICING & COINS ---------- */
+VIEW_RENDERERS.pricing = async () => {
+  const p = await apiGet('/admin/settings/pricing');
+  window._pricingCache = p;
+  return `
+    <div class="settings-card">
+      <h4><i class="fas fa-money-bill-wave"></i> Deployment Pricing</h4>
+      <p class="desc">Amount charged for a single bot deployment.</p>
+      <div class="num-row"><div class="num-label">Monthly deployment price (USD)</div><input type="number" id="s_deployPrice" step="0.5" value="${p.deployPrice ?? 5}"></div>
+    </div>
+    <div class="settings-card">
+      <h4><i class="fas fa-coins"></i> AV Coins Settings</h4>
+      <p class="desc">Control how coins are earned and spent.</p>
+      <div class="num-row"><div class="num-label">Coins earned per referral</div><input type="number" id="s_coinsPerReferral" value="${p.coinsPerReferral ?? 2}"></div>
+      <div class="num-row"><div class="num-label">Coins required per deployment</div><input type="number" id="s_coinsPerDeploy" value="${p.coinsPerDeploy ?? 50}"></div>
+    </div>
+    <button class="btn-accent" onclick="savePricing()"><i class="fas fa-floppy-disk"></i> Save Pricing</button>`;
+};
+async function savePricing(){
+  try {
+    const body = { deployPrice:parseFloat(val('s_deployPrice'))||0, coinsPerReferral:parseInt(val('s_coinsPerReferral'))||0, coinsPerDeploy:parseInt(val('s_coinsPerDeploy'))||0 };
+    await apiPut('/admin/settings/pricing', body); flashSaved(); toast('Pricing updated!');
+  } catch(e) { toast(e.message,'err'); }
+}
+
+/* ---------- SUBSCRIPTION RULES ---------- */
+VIEW_RENDERERS.subscription = async () => {
+  const s = await apiGet('/admin/settings/subscription');
+  return `
+    <div class="hint-box"><i class="fas fa-circle-info"></i> Hizi settings zinaendesha cron ya auto-expiry (saa 02:00) na reminder emails (saa 09:00) kila siku.</div>
+    <div class="settings-card">
+      <h4><i class="fas fa-calendar-check"></i> Subscription Rules</h4>
+      <div class="num-row"><div class="num-label">Default subscription length (days)</div><input type="number" id="s_defaultDays" value="${s.defaultSubscriptionDays ?? 30}"></div>
+      <div class="num-row"><div class="num-label">Renewal discount (%)</div><input type="number" id="s_discountPct" value="${s.renewalDiscountPercent ?? 15}"></div>
+      <div class="num-row"><div class="num-label">Discount valid within (days before expiry)</div><input type="number" id="s_discountWindow" value="${s.discountValidDaysBefore ?? 3}"></div>
+      <div class="num-row"><div class="num-label">Bonus days on every renewal</div><input type="number" id="s_bonusDays" value="${s.bonusDaysOnRenewal ?? 0}"></div>
+      <div class="num-row"><div class="num-label">Send reminder email (days before expiry)</div><input type="number" id="s_reminderDays" value="${s.reminderDaysBefore ?? 3}"></div>
+    </div>
+    <button class="btn-accent" onclick="saveSubscription()"><i class="fas fa-floppy-disk"></i> Save Rules</button>`;
+};
+async function saveSubscription(){
+  try {
+    const body = {
+      defaultSubscriptionDays: parseInt(val('s_defaultDays'))||30,
+      renewalDiscountPercent: parseInt(val('s_discountPct'))||0,
+      discountValidDaysBefore: parseInt(val('s_discountWindow'))||3,
+      bonusDaysOnRenewal: parseInt(val('s_bonusDays'))||0,
+      reminderDaysBefore: parseInt(val('s_reminderDays'))||3,
+    };
+    await apiPut('/admin/settings/subscription', body); flashSaved(); toast('Subscription rules updated!');
+  } catch(e) { toast(e.message,'err'); }
+}
+
+/* ---------- DEPLOYER PLAN ---------- */
+VIEW_RENDERERS.deployer = async () => {
+  const d = await apiGet('/admin/settings/deployer');
+  return `
+    <div class="settings-card">
+      <h4><i class="fas fa-user-shield"></i> Deployer Account Plan</h4>
+      <div class="num-row"><div class="num-label">Monthly price (USD)</div><input type="number" id="s_price" step="0.5" value="${d.price ?? 10}"></div>
+      <div class="num-row"><div class="num-label">Subscription length (days)</div><input type="number" id="s_days" value="${d.days ?? 30}"></div>
+    </div>
+    <div class="settings-card">
+      <h4><i class="fas fa-list-check"></i> Benefits List</h4>
+      <p class="desc">One benefit per line.</p>
+      <div class="f-group"><textarea id="s_benefits" rows="6">${esc(d.benefits||'')}</textarea></div>
+    </div>
+    <button class="btn-accent" onclick="saveDeployer()"><i class="fas fa-floppy-disk"></i> Save Plan</button>`;
+};
+async function saveDeployer(){
+  try {
+    const body = { price:parseFloat(val('s_price'))||0, days:parseInt(val('s_days'))||0, benefits:val('s_benefits') };
+    await apiPut('/admin/settings/deployer', body); flashSaved(); toast('Deployer plan updated!');
+  } catch(e) { toast(e.message,'err'); }
+}
+
+/* ---------- PLATFORM LINKS ---------- */
+VIEW_RENDERERS.links = async () => {
+  const l = await apiGet('/admin/settings/links');
+  return `
+    <div class="settings-card"><h4><i class="fas fa-gift"></i> Get Free Bot</h4><p class="desc">WhatsApp link for "Get Free Bot" button.</p><div class="f-group"><input id="s_freeBot" value="${esc(l.freeBot)}"></div></div>
+    <div class="settings-card"><h4><i class="fas fa-user-astronaut"></i> Meet a Developer</h4><div class="f-group"><input id="s_devContact" value="${esc(l.devContact)}"></div></div>
+    <div class="settings-card">
+      <h4><i class="fas fa-headset"></i> Support Links</h4>
+      <div class="form-grid two">
+        <div class="f-group"><label>WhatsApp Community</label><input id="s_waCommunity" value="${esc(l.waCommunity)}"></div>
+        <div class="f-group"><label>WhatsApp Channel</label><input id="s_waChannel" value="${esc(l.waChannel)}"></div>
+        <div class="f-group"><label>Telegram Channel</label><input id="s_tgChannel" value="${esc(l.tgChannel)}"></div>
+        <div class="f-group"><label>Pairing Page</label><input id="s_pairFallback" value="${esc(l.pairFallback)}"></div>
+      </div>
+    </div>
+    <div class="settings-card">
+      <h4><i class="fas fa-robot"></i> Adevos Assistant</h4>
+      <div class="f-group"><label>Greeting</label><input id="s_assistantGreet" value="${esc(l.assistantGreet)}"></div>
+      <div class="f-group" style="margin-top:.6rem;"><label>Auto-Reply</label><input id="s_assistantReply" value="${esc(l.assistantReply)}"></div>
+    </div>
+    <button class="btn-accent" onclick="saveLinks()"><i class="fas fa-floppy-disk"></i> Save Links</button>`;
+};
+async function saveLinks(){
+  try {
+    const body = { freeBot:val('s_freeBot'), devContact:val('s_devContact'), waCommunity:val('s_waCommunity'), waChannel:val('s_waChannel'), tgChannel:val('s_tgChannel'), pairFallback:val('s_pairFallback'), assistantGreet:val('s_assistantGreet'), assistantReply:val('s_assistantReply') };
+    await apiPut('/admin/settings/links', body); flashSaved(); toast('Links saved!');
+  } catch(e) { toast(e.message,'err'); }
+}
+
+/* ---------- DEPLOYMENT MUSIC ---------- */
+VIEW_RENDERERS.music = async () => {
+  const m = await apiGet('/admin/settings/music');
+  window._musicCache = m;
+  const tracks = (m.tracks||[]).map((t,i)=>`
+    <div class="acc-row"><i class="fas fa-music"></i>
+      <div class="acc-fields">
+        <input value="${esc(t.name)}" placeholder="Track name" onchange="window._musicCache.tracks[${i}].name=this.value">
+        <input value="${esc(t.url)}" placeholder="Direct .mp3 link" onchange="window._musicCache.tracks[${i}].url=this.value">
+      </div>
+      <div class="icon-btn del" onclick="removeTrack(${i})"><i class="fas fa-trash"></i></div>
+    </div>`).join('') || emptyMsg('No tracks yet.');
+  return `
+    <div class="settings-card">
+      <h4><i class="fas fa-sliders-h"></i> Playback Settings</h4>
+      <div class="num-row"><div class="num-label">Autoplay on Deployment page</div>
+        <select id="s_autoplay"><option value="true" ${m.autoplay?'selected':''}>On</option><option value="false" ${!m.autoplay?'selected':''}>Off</option></select>
+      </div>
+      <div class="num-row"><div class="num-label">Default volume (%)</div><input type="number" id="s_volume" min="0" max="100" value="${m.volume ?? 70}"></div>
+    </div>
+    <div class="sec-head"><div><p>Track playlist</p></div><button class="btn-accent" onclick="addTrack()"><i class="fas fa-plus"></i> Add Track</button></div>
+    <div id="tracksListWrap">${tracks}</div>
+    <button class="btn-accent" style="margin-top:.8rem;" onclick="saveMusic()"><i class="fas fa-floppy-disk"></i> Save Music Settings</button>`;
+};
+function addTrack(){ window._musicCache.tracks = window._musicCache.tracks||[]; window._musicCache.tracks.push({name:'',url:''}); switchView('music'); }
+function removeTrack(i){ window._musicCache.tracks.splice(i,1); switchView('music'); }
+async function saveMusic(){
+  try {
+    window._musicCache.autoplay = val('s_autoplay')==='true';
+    window._musicCache.volume = parseInt(val('s_volume'))||0;
+    await apiPut('/admin/settings/music', window._musicCache); flashSaved(); toast('Music settings saved!');
+  } catch(e) { toast(e.message,'err'); }
+}
+
+/* ---------- NOTIFICATIONS ---------- */
+VIEW_RENDERERS.notifications = async () => {
+  const n = await apiGet('/admin/settings/notifications');
+  return `
+    <div class="settings-card">
+      <h4><i class="fas fa-bell"></i> Pop-up Notifications</h4>
+      <div class="num-row"><div class="num-label">Show pop-up notifications</div>
+        <select id="s_enabled"><option value="true" ${n.enabled?'selected':''}>Enabled</option><option value="false" ${!n.enabled?'selected':''}>Disabled</option></select>
+      </div>
+      <div class="num-row"><div class="num-label">Interval between pop-ups (seconds)</div><input type="number" id="s_interval" value="${n.intervalSeconds ?? 6.5}"></div>
+      <div class="num-row"><div class="num-label">Visible duration (seconds)</div><input type="number" id="s_duration" value="${n.durationSeconds ?? 4}"></div>
+      <div class="num-row"><div class="num-label">Stop after (minutes, 0=no limit)</div><input type="number" id="s_stopafter" value="${n.stopAfterMinutes ?? 4}"></div>
+    </div>
+    <button class="btn-accent" onclick="saveNotifications()"><i class="fas fa-floppy-disk"></i> Save Settings</button>`;
+};
+async function saveNotifications(){
+  try {
+    const body = { enabled: val('s_enabled')==='true', intervalSeconds:parseFloat(val('s_interval'))||1, durationSeconds:parseFloat(val('s_duration'))||1, stopAfterMinutes:parseFloat(val('s_stopafter'))||0 };
+    await apiPut('/admin/settings/notifications', body); flashSaved(); toast('Notification settings saved!');
+  } catch(e) { toast(e.message,'err'); }
+}
+
+/* ---------- LIVE ACTIVITY ---------- */
+VIEW_RENDERERS.activity = async () => {
+  const logs = await apiGet('/admin/activity');
+  const html = logs.map(a=>`
+    <div class="log-row">
+      <div style="width:30px;height:30px;border-radius:50%;background:rgba(0,230,118,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="${a.icon}" style="color:var(--accent);font-size:.75rem;"></i></div>
+      <div class="log-meta"><span class="log-time-tag">${new Date(a.createdAt).toLocaleString()}</span><div class="log-text">${a.text}</div></div>
+    </div>`).join('') || emptyMsg('No activity yet.');
+  return `<div class="sec-head"><div><p>Real events from users, payments, and deployments.</p></div><button class="btn-ghost" onclick="clearActivity()"><i class="fas fa-broom"></i> Clear Feed</button></div><div>${html}</div>`;
+};
+async function clearActivity(){ if(!confirm('Clear all activity logs?')) return; try{ await apiDelete('/admin/activity'); toast('Cleared.'); switchView('activity'); }catch(e){toast(e.message,'err');} }
+
+/* ---------- DEPLOYMENTS ---------- */
+VIEW_RENDERERS.deployments = async () => {
+  const deployments = await apiGet('/admin/deployments');
+  const online = deployments.filter(d=>d.status==='online').length;
+  const expired = deployments.filter(d=>d.status==='expired').length;
+  const html = deployments.map(d=>`
+    <div class="log-row" style="align-items:center;">
+      <div style="width:8px;height:8px;border-radius:50%;background:${d.status==='online'?'var(--accent)':(d.status==='expired'?'#ffb020':'var(--danger)')};flex-shrink:0;"></div>
+      <div class="log-meta">
+        <span class="log-time-tag">${(d.source||'').toUpperCase()} · ${(d.platform||'').toUpperCase()} · ${d.status.toUpperCase()}${d.expiresAt?' · expires '+new Date(d.expiresAt).toLocaleDateString():''}</span>
+        <div class="log-text"><b>${d.bot?.name||'Bot'}</b> — owned by ${d.user?.name||'Unknown'} (${d.ownerName}, ${d.ownerNum})</div>
+      </div>
+      <div class="log-actions">
+        <button class="btn-ghost" onclick="extendDeployment('${d._id}')"><i class="fas fa-calendar-plus"></i></button>
+        <button class="btn-danger" onclick="deleteGeneric('deployments','${d._id}')"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>`).join('') || emptyMsg('No deployments yet.');
+  return `
+    <div class="stat-grid">
+      <div class="stat-card"><i class="fas fa-server"></i><div class="stat-num">${deployments.length}</div><div class="stat-label">Total deployments</div></div>
+      <div class="stat-card"><i class="fas fa-circle" style="color:var(--accent);"></i><div class="stat-num">${online}</div><div class="stat-label">Online now</div></div>
+      <div class="stat-card"><i class="fas fa-triangle-exclamation" style="color:#ffb020;"></i><div class="stat-num">${expired}</div><div class="stat-label">Expired</div></div>
+    </div>
+    <div>${html}</div>`;
+};
+async function extendDeployment(id){
+  const days = prompt('Ongeza siku ngapi bure (gift)?', '7');
+  if(!days) return;
+  try { await apiPost(`/admin/deployments/${id}/extend`, { days: parseInt(days) }); toast('Subscription extended!'); switchView('deployments'); }
+  catch(e){ toast(e.message,'err'); }
+}
+
+/* ---------- USERS ---------- */
+VIEW_RENDERERS.users = async () => {
+  const users = await apiGet('/admin/users');
+  window._usersCache = users;
+  const html = users.map((u,i)=>`
+    <div class="adm-card" style="margin-bottom:.8rem;"><div class="adm-card-body" style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;">
+      <div style="width:42px;height:42px;border-radius:50%;background:var(--accent);color:#031b0d;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">${(u.name||'??').split(' ').map(p=>p[0]).join('').substring(0,2).toUpperCase()}</div>
+      <div style="flex:1;min-width:160px;">
+        <h4 style="margin-bottom:.15rem;">${u.name} ${u.status==='suspended'?'<span style="color:var(--danger);font-size:.6rem;">SUSPENDED</span>':''}</h4>
+        <p style="margin-bottom:.2rem;min-height:auto;"><i class="fas fa-envelope"></i> ${u.email}</p>
+        <p style="margin-bottom:0;min-height:auto;font-size:.65rem;">${u.provider} · <span class="adm-tag" style="margin:0;">${u.plan}</span> · <i class="fas fa-coins" style="color:var(--accent);"></i> ${u.coins} AV</p>
+      </div>
+      <div class="adm-card-actions">
+        <button class="btn-ghost" onclick="openUserForm('${u._id}')"><i class="fas fa-pen"></i> Edit</button>
+        <button class="btn-ghost" onclick="giftCoinsPrompt('${u._id}')"><i class="fas fa-coins"></i> Gift Coins</button>
+        <button class="btn-ghost" onclick="messageUserForm('${u._id}')"><i class="fas fa-paper-plane"></i> Message</button>
+        <button class="btn-danger" onclick="deleteGeneric('users','${u._id}')"><i class="fas fa-trash"></i> Remove</button>
+      </div>
+    </div></div>`).join('') || emptyMsg('No users yet.');
+  return `<div class="sec-head"><div><p>Everyone registered — grant access, gift coins, or message them.</p></div><button class="btn-accent" onclick="openUserForm()"><i class="fas fa-user-plus"></i> Add User</button></div><div>${html}</div>`;
+};
+function openUserForm(id){
+  const u = id ? window._usersCache.find(x=>x._id===id) : {name:'',email:'',plan:'User',status:'active',coins:0};
+  showModal(id?'Edit User':'Add User', `
+    <div class="form-grid two">
+      <div class="f-group"><label>Full Name</label><input id="f_name" value="${esc(u.name)}"></div>
+      <div class="f-group"><label>Email</label><input id="f_email" value="${esc(u.email)}"></div>
+      <div class="f-group"><label>Plan / Access</label><select id="f_plan"><option value="User" ${u.plan==='User'?'selected':''}>User Account</option><option value="Deployer" ${u.plan==='Deployer'?'selected':''}>Deployer Account</option></select></div>
+      <div class="f-group"><label>Status</label><select id="f_status"><option value="active" ${u.status==='active'?'selected':''}>Active</option><option value="suspended" ${u.status==='suspended'?'selected':''}>Suspended</option></select></div>
+      <div class="f-group"><label>AV Coins Balance</label><input type="number" id="f_coins" value="${u.coins||0}"></div>
+    </div>`, async ()=>{
+      const body = { name:val('f_name'), email:val('f_email'), plan:val('f_plan'), status:val('f_status'), coins:parseInt(val('f_coins'))||0 };
+      if(!body.name||!body.email) throw new Error('Name and email are required.');
+      if(id) await apiPut(`/admin/users/${id}`, body); else await apiPost('/admin/users', body);
+      flashSaved(); closeGenModal(); toast(id?'User updated!':'User added!'); switchView('users');
+    });
+}
+async function giftCoinsPrompt(id){
+  const amount = prompt('Toa coins ngapi bure kwa mtumiaji huyu?', '10');
+  if(!amount) return;
+  try { await apiPost(`/admin/users/${id}/gift-coins`, { amount: parseFloat(amount) }); toast('Coins gifted!'); switchView('users'); }
+  catch(e) { toast(e.message,'err'); }
+}
+function messageUserForm(id){
+  const u = window._usersCache.find(x=>x._id===id);
+  showModal(`Message ${u.name}`, `
+    <div class="form-grid">
+      <div class="f-group"><label>To</label><input value="${esc(u.email)}" disabled style="opacity:.6;"></div>
+      <div class="f-group"><label>Subject</label><input id="f_subject" placeholder="e.g. Your Deployer Account is ready"></div>
+      <div class="f-group"><label>Message</label><textarea id="f_msg" rows="4"></textarea></div>
+    </div>`, async ()=>{
+      if(!val('f_subject')||!val('f_msg')) throw new Error('Subject and message are required.');
+      await apiPost(`/admin/users/${id}/message`, { subject:val('f_subject'), message:val('f_msg') });
+      closeGenModal(); toast(`Email sent to ${u.email}!`);
+    });
+}
+
+/* ---------- PAYMENTS ---------- */
+VIEW_RENDERERS.payments = async () => {
+  const transactions = await apiGet('/admin/payments');
+  const html = transactions.map(t=>`
+    <div class="log-row" style="align-items:center;">
+      <div style="width:8px;height:8px;border-radius:50%;background:${t.status==='confirmed'?'var(--accent)':(t.status==='pending'?'#ffb020':'var(--danger)')};flex-shrink:0;"></div>
+      <div class="log-meta">
+        <span class="log-time-tag">${t.method.toUpperCase()} · ${t.type} · ${new Date(t.createdAt).toLocaleString()}</span>
+        <div class="log-text"><b>${t.user?.name||'Unknown'}</b> (${t.user?.email||''}) — $${t.amount} — <span style="color:${t.status==='confirmed'?'var(--accent)':'#ffb020'};">${t.status}</span></div>
+      </div>
+      ${t.status==='pending' ? `<div class="log-actions"><button class="btn-accent" style="padding:.35rem .7rem;font-size:.65rem;" onclick="verifyPayment('${t._id}')">Mark as Paid</button></div>` : ''}
+    </div>`).join('') || emptyMsg('No transactions yet.');
+  return `<div class="sec-head"><div><p>All Paystack and manual payment transactions.</p></div></div><div>${html}</div>`;
+};
+async function verifyPayment(id){
+  if(!confirm('Thibitisha malipo haya kama yamelipwa?')) return;
+  try { await apiPost(`/admin/payments/${id}/verify`); toast('Payment verified — access granted!'); switchView('payments'); }
+  catch(e) { toast(e.message,'err'); }
+}
+
+/* ---------- RESET ---------- */
+VIEW_RENDERERS.reset = async () => `
+  <div class="settings-card">
+    <h4><i class="fas fa-triangle-exclamation" style="color:var(--danger);"></i> Reset Demo Data</h4>
+    <p class="desc">Restores all content (slides, cards, bots, feedback, pricing, platforms, payment methods) back to original defaults. Users, Deployments and Payments are NOT touched. This cannot be undone.</p>
+    <button class="btn-danger" style="padding:.6rem 1.2rem;font-size:.75rem;" onclick="resetAllData()"><i class="fas fa-rotate-left"></i> Reset Everything</button>
+  </div>`;
+async function resetAllData(){
+  if(!confirm('Hii itarudisha content zote kwenye default. Endelea?')) return;
+  try { await apiPost('/admin/reset'); toast('Content reset to defaults!'); switchView('dashboard'); }
+  catch(e) { toast(e.message,'err'); }
+}
+
+/* ===================== RESPONSIVE / KEYBOARD HANDLING ===================== */
+function scrollFieldIntoView(el){
+  if(!el) return;
+  clearTimeout(window._scrollFieldT);
+  window._scrollFieldT = setTimeout(()=>{
+    const vv = window.visualViewport;
+    const visibleHeight = vv ? vv.height : window.innerHeight;
+    const visibleTop = vv ? vv.offsetTop : 0;
+    const rect = el.getBoundingClientRect();
+    const margin = 14;
+    const topLimit = visibleTop + margin;
+    const bottomLimit = visibleTop + visibleHeight - margin;
+    if(rect.top < topLimit || rect.bottom > bottomLimit){
+      const target = topLimit + (visibleHeight - margin*2) / 2 - (rect.height/2);
+      const delta = rect.top - target;
+      const scrollParent = el.closest('.modal-box, .login-overlay');
+      if(scrollParent){ scrollParent.scrollTop += delta; } else { window.scrollBy({ top: delta, behavior: 'smooth' }); }
+    }
+  }, 300);
+}
+document.addEventListener('focusin', (e)=>{
+  const tag = e.target.tagName;
+  if(tag==='INPUT' || tag==='TEXTAREA' || tag==='SELECT') scrollFieldIntoView(e.target);
+});
+if(window.visualViewport){
+  window.visualViewport.addEventListener('resize', ()=>{
+    const kbHeight = Math.max(0, window.innerHeight - window.visualViewport.height);
+    const keyboardOpen = kbHeight > 120;
+    document.body.classList.toggle('keyboard-open', keyboardOpen);
+    const contentArea = document.querySelector('.content-area');
+    if(contentArea) contentArea.style.paddingBottom = keyboardOpen ? (kbHeight + 90) + 'px' : '';
+    const activeModalBox = document.querySelector('.modal-overlay.active .modal-box');
+    if(activeModalBox) activeModalBox.style.maxHeight = keyboardOpen ? (window.visualViewport.height - 24) + 'px' : '';
+    const loginOverlay = document.getElementById('loginOverlay');
+    if(loginOverlay && loginOverlay.style.display !== 'none') loginOverlay.style.alignItems = keyboardOpen ? 'flex-start' : 'center';
+    const active = document.activeElement;
+    if(keyboardOpen && active && (active.tagName==='INPUT'||active.tagName==='TEXTAREA'||active.tagName==='SELECT')) scrollFieldIntoView(active);
+  });
+}
+</script>
+
+</body>
+</html>
