@@ -14,14 +14,21 @@ const adminLogin = asyncHandler(async (req, res) => {
 
   const validUsername = username === process.env.ADMIN_USERNAME;
   const hash = process.env.ADMIN_PASSWORD_HASH;
+  const plainPassword = process.env.ADMIN_PASSWORD;
 
-  if (!hash) {
+  let validPassword = false;
+  if (hash) {
+    validPassword = validUsername && (await bcrypt.compare(password, hash));
+  } else if (plainPassword) {
+    // Fallback for hosts without shell access (e.g. Render free tier) where
+    // running "npm run hash-password" isn't possible. Works, but switch to
+    // ADMIN_PASSWORD_HASH once you can — it's the more secure option.
+    validPassword = validUsername && password === plainPassword;
+  } else {
     return res.status(500).json({
-      error: 'ADMIN_PASSWORD_HASH haijawekwa kwenye .env. Tumia "npm run hash-password" kuitengeneza.',
+      error: 'Weka ADMIN_PASSWORD_HASH (inapendekezwa) au ADMIN_PASSWORD kwenye environment variables.',
     });
   }
-
-  const validPassword = validUsername && (await bcrypt.compare(password, hash));
 
   if (!validUsername || !validPassword) {
     return res.status(401).json({ error: 'Username au password si sahihi.' });
