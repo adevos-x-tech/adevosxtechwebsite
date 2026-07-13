@@ -9,6 +9,7 @@ const passport = require('./src/config/passport');
 const { notFound, errorHandler } = require('./src/middleware/errorHandler');
 const { apiLimiter } = require('./src/middleware/rateLimiters');
 const { startCronJobs } = require('./src/cron/subscriptionCron');
+const { ensureSeeded } = require('./src/seed/ensureSeeded');
 
 const publicRoutes = require('./src/routes/public.routes');
 const adminRoutes = require('./src/routes/admin.routes');
@@ -63,7 +64,8 @@ app.use(errorHandler);
 // ---------- Start ----------
 const PORT = process.env.PORT || 5000;
 
-connectDB().then(() => {
+connectDB().then(async () => {
+  await ensureSeeded();
   app.listen(PORT, () => {
     console.log(`🚀 Adevos-X backend inaendesha kwenye port ${PORT} (${process.env.NODE_ENV || 'development'})`);
   });
