@@ -12,17 +12,23 @@ const adminLogin = asyncHandler(async (req, res) => {
     return res.status(400).json({ error: 'Username na password vinahitajika.' });
   }
 
-  const validUsername = username === process.env.ADMIN_USERNAME;
-  const hash = process.env.ADMIN_PASSWORD_HASH;
+  const validUsername = username.trim() === (process.env.ADMIN_USERNAME || '').trim();
+  const hashValue = process.env.ADMIN_PASSWORD_HASH;
   const plainPassword = process.env.ADMIN_PASSWORD;
 
+  // Real bcrypt hashes always look like $2a$10$..., $2b$12$..., etc. If
+  // whatever was pasted into ADMIN_PASSWORD_HASH doesn't match that shape,
+  // it's almost certainly a plain password typed into the wrong field —
+  // so we transparently treat it as one instead of failing every login.
+  const looksLikeBcryptHash = (v) => typeof v === 'string' && /^\$2[aby]\$\d{2}\$/.test(v);
+
   let validPassword = false;
-  if (hash) {
-    validPassword = validUsername && (await bcrypt.compare(password, hash));
+  if (looksLikeBcryptHash(hashValue)) {
+    validPassword = validUsername && (await bcrypt.compare(password, hashValue));
+  } else if (hashValue) {
+    // Value is present but isn't a real hash — compare as plain text.
+    validPassword = validUsername && password === hashValue;
   } else if (plainPassword) {
-    // Fallback for hosts without shell access (e.g. Render free tier) where
-    // running "npm run hash-password" isn't possible. Works, but switch to
-    // ADMIN_PASSWORD_HASH once you can — it's the more secure option.
     validPassword = validUsername && password === plainPassword;
   } else {
     return res.status(500).json({
